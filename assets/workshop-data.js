@@ -1,0 +1,425 @@
+window.WORKSHOP_APPS = [
+  {
+    "id": "chubb_ai",
+    "name": "Chubb AI",
+    "short_name": "Chubb AI",
+    "family": "Assistants & Document AI",
+    "review_status": "Pending Review",
+    "owner": "Enterprise AI / Chubb EA",
+    "business_unit": "Enterprise Document AI",
+    "region_scope": [
+      "North America",
+      "COG"
+    ],
+    "business_purpose": "Centralize Chubb document access and GenAI question answering across mobile, desktop, web, and office channels so business teams can find answers faster, reduce manual research, and improve compliant decision-making.",
+    "capabilities": [
+      "document Q&A",
+      "semantic search",
+      "vector search",
+      "document ingestion",
+      "metadata extraction",
+      "mobile and web access",
+      "document comparison",
+      "AI app catalog"
+    ],
+    "features": [
+      "document upload",
+      "question answering",
+      "chat history",
+      "user preferences",
+      "app store catalog",
+      "document comparison",
+      "semantic retrieval",
+      "office plugin access"
+    ],
+    "tech_stack": [
+      "AKS",
+      "AngularJS",
+      "NodeJS",
+      "TypeScript",
+      "Python",
+      "Cosmos DB",
+      "Azure AI Search",
+      "Azure OpenAI",
+      "Azure Blob Storage",
+      "ADLS",
+      "APIM",
+      "Redis",
+      "Azure Key Vault"
+    ],
+    "data_domains": [
+      "underwriting guidelines",
+      "risk engineering documents",
+      "legal documents",
+      "metadata",
+      "prompts and threads",
+      "user profile"
+    ],
+    "data_classification": "Red SPI",
+    "deployment_regions": [
+      "US East 2 (NA Azure)",
+      "Central US (NA Azure)"
+    ],
+    "models": [
+      "GPT-4o Mini",
+      "Azure Document Intelligence",
+      "text-embedding-3-small"
+    ],
+    "users": [
+      "business teams",
+      "executives",
+      "staff with Chubb LANIDs",
+      "mobile users",
+      "desktop users"
+    ],
+    "interfaces": [
+      "Mobile App",
+      "WebApp",
+      "Office Plugin UI",
+      "AI/RAG API",
+      "Azure AI Search",
+      "Azure OpenAI",
+      "Cosmos DB"
+    ],
+    "nfr": {
+      "rto_hours": 8,
+      "rpo_hours": 8,
+      "availability": "24x5 with business-hour target 99.99%"
+    },
+    "priority": 5,
+    "notes": "Uses the real Chubb AI SAS Word document.",
+    "source_sections": {
+      "business_purpose": [
+        "Background",
+        "Business Needs and Benefits",
+        "Objectives and Scope"
+      ],
+      "capabilities": [
+        "Application Architecture",
+        "Architecture Layers",
+        "ML and Analytics"
+      ],
+      "tech_stack": [
+        "Architecture Layers",
+        "Cloud Software",
+        "Security Questionnaire"
+      ],
+      "data_and_security": [
+        "Data Architecture",
+        "Security Questionnaire"
+      ]
+    },
+    "source_type": "Real SAS document",
+    "document": {
+      "filename": "ChubbAI_SAS.docx",
+      "path": "source_materials/real_sas_docs/ChubbAI_SAS.docx",
+      "title": "Solution Architecture Specification Chubb AI",
+      "version": "1.0",
+      "author": "Chubb EA",
+      "issue_date": "10/21/2025",
+      "document_status": "Draft"
+    },
+    "si_number": "4698",
+    "source_excerpt": {
+      "background": "Today, the Chubb business team engages in an extensive process of reviewing numerous documents, checklists, and guidelines to conduct research and analysis for decision-making purposes. The task of searching through unstructured data, such as documents, PDFs, and Excel sheets, entails significant time and effort. Furthermore, it is imperative to ensure compliance during the decision-making process. To address these challenges Pathfinder was build, an advanced tool that leverages GenAI capabilities. The primary objective of Pathfinder is to streamline access to unstructured data, enabling the business team to effortlessly search for information, obtain relevant answers, mitigate errors in decision-making, and enhance overall efficiency. We\u2019re renaming Pathfinder as Chubb AI and enhancing some of the capabilities.",
+      "objectives": "Provides centralized access to all Chubb documents (e.g., Underwriting Guidelines, Risk Engineering documents, Legal docs) Enables Q&A functionality directly against these documents for fast, accurate information retrieval Deploys Pathfinder as an app on both Chubb mobile phones and desktops for seamless accessibility Includes document sources from critical business units in North America (NA), COG, and Legal, with plans to expand to additional sources as capacity allows Scope Build Chubb AI as a comprehensive product for document access and intelligent Q&A Ensure deployment across mobile and desktop platforms for maximum convenience Start with essential business units and continuously expand document coverage to support broader organizational needs",
+      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Application URL: Chubb AI App Store: https://ai-sit.chubb.com/apps/home Chubb AI : https://ai-sit.chubb.com/tabs/home Chubb AI UI Chubb Managed Devices -> Chubb AI Mobile App Browser -> Chubb AI Web App MS Office Plugins -> MS Outlook/word/ppt Business Logic The data pipeline is designed to extract attributes from documents and provide Q&A on the fly using RAG. Chubb GPT provides tailored Q&A on the ad hoc as well Chubb AI data powered by nightly batch ingestion from various sources.Chubb AI data is covered under separate SI 5163. Chu",
+      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d Data Security Controls for GenAI based Applications This section"
+    },
+    "coords": {
+      "embedding3d": {
+        "x": -3.761,
+        "y": 3.81,
+        "z": -4.559
+      },
+      "tech_focus": {
+        "x": -3.649,
+        "y": 3.871,
+        "z": -4.374
+      },
+      "purpose_focus": {
+        "x": -3.797,
+        "y": 3.752,
+        "z": -4.631
+      }
+    }
+  },
+  {
+    "id": "quantexa",
+    "name": "GDP Quantexa",
+    "short_name": "Quantexa",
+    "family": "Fraud & Entity Intelligence",
+    "review_status": "In Review",
+    "owner": "Global Data Platform",
+    "business_unit": "GDP / Fraud & Entity Resolution",
+    "region_scope": [
+      "Global"
+    ],
+    "business_purpose": "Provision the Quantexa platform so Chubb teams can perform entity resolution, relationship analytics, and network fraud detection across integrated data sources to improve investigation quality and contextual decision-making.",
+    "capabilities": [
+      "entity resolution",
+      "network analytics",
+      "fraud detection",
+      "relationship search",
+      "risk assessment",
+      "investigation workflows",
+      "data integration"
+    ],
+    "features": [
+      "entity graph",
+      "network visualization",
+      "dynamic entity resolution",
+      "task creation",
+      "alert thresholds",
+      "investigator UI",
+      "SSO access"
+    ],
+    "tech_stack": [
+      "AKS",
+      "Azure Databricks",
+      "ADLS",
+      "Elasticsearch",
+      "PostgreSQL",
+      "Azure Active Directory",
+      "Azure Key Vault",
+      "Azure Log Analytics",
+      "ADF"
+    ],
+    "data_domains": [
+      "individual",
+      "business",
+      "address",
+      "telephone",
+      "email",
+      "documents",
+      "alerts",
+      "tasks"
+    ],
+    "data_classification": "N/A (platform scope)",
+    "deployment_regions": [
+      "US East 2 (NA Azure)",
+      "Central US (NA Azure)"
+    ],
+    "models": [
+      "entity resolution",
+      "network fraud model",
+      "knowledge graph"
+    ],
+    "users": [
+      "staff with Chubb LANIDs",
+      "analytics team",
+      "technology users",
+      "investigators"
+    ],
+    "interfaces": [
+      "ADLS",
+      "Databricks",
+      "Elasticsearch",
+      "PostgreSQL",
+      "Quantexa UI",
+      "Quantexa APIs"
+    ],
+    "nfr": {
+      "rto_hours": 8,
+      "rpo_hours": 12,
+      "availability": "Mon-Sat business hours"
+    },
+    "priority": 4,
+    "notes": "Platform-oriented SAS. Security classification rows are marked not applicable for business data because future solution TSGs define business-specific data usage.",
+    "source_sections": {
+      "business_purpose": [
+        "Background",
+        "Business Needs and Benefits",
+        "Objectives and Scope"
+      ],
+      "capabilities": [
+        "Logical Architecture",
+        "System Topology/Context"
+      ],
+      "tech_stack": [
+        "Integration Architecture",
+        "Cloud Infrastructure/Services",
+        "Security Questionnaire"
+      ],
+      "data_and_security": [
+        "Data Architecture",
+        "Security Questionnaire"
+      ]
+    },
+    "source_type": "Real SAS document",
+    "document": {
+      "filename": "EA_5145_Solution Architecture Specification Quantexa_Gate3.docx",
+      "path": "source_materials/real_sas_docs/EA_5145_Solution Architecture Specification Quantexa_Gate3.docx",
+      "title": "Solution Architecture Specification GDP Quantexa",
+      "version": "0.1",
+      "author": "Chubb EA",
+      "issue_date": "03/05/2025",
+      "document_status": "Draft"
+    },
+    "si_number": "5145",
+    "source_excerpt": {
+      "background": "Quantexa is a data analytics platform designed to enhance decision-making through advanced contextual decision intelligence. It leverages artificial intelligence and machine learning to provide organizations with a comprehensive view of their data, enabling them to uncover hidden insights and relationships within their datasets. By integrating various data sources, Quantexa helps organizations improve risk management, enhance customer insights, and streamline operations. Key features of Quantexa include: Entity Resolution: The platform can identify and link related entities across disparate data sources, ensuring a unified view of information. Network Analytics: Quantexa visualizes complex relationships and networks, allowing users to understand connections and patterns that may not be immediately apparent. Risk Assessment: It provides tools for assessing and mitigating risks, particular",
+      "objectives": "We are onboarding Quantexa to the platform so that it can be leveraged for Entity Resolution and Network Fraud Detection. Entity Resolution will identify unique businesses or individuals by utilizing both internal and external data sources. Network Fraud Detection will leverage a combination of business rules, a network fraud model, a knowledge graph, and specialized fraud-detection tools Scope for this sprint: To obtain Gate 3 approval for provisioning the production platform. Provide an overview description of the purpose/goal of the solution. Where available reference the Business and Solutions Requirement Document and/or the Project Charter document(s). Define the scope of the solution e.g. Europe only, all of COG, Europe initially with later rollout to LATAM and APAC, which Lines of Business (LOBs) etc.This viewpoint provides Senior Management with the business benefits of this solu",
+      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Note that the URL of the application should be highlighted here if known and if the application is a web application Application URL: https://gdp-graph-dev.chubb.com Quantexa UI, ML notebook Business Logic User can decide to ingest scope of the source data and define filter conditions. The scope of the current TSG is for platform deployment. The solutions (with their own TSG) will talk about solution level data flows and will have to abide by Chubb polices of data protection at rest and transit Integration Layer Below are the integrat",
+      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d Appendix Reference Documentation Add references to documents tha"
+    },
+    "coords": {
+      "embedding3d": {
+        "x": 0.508,
+        "y": -7.0,
+        "z": -1.257
+      },
+      "tech_focus": {
+        "x": 0.492,
+        "y": -7.0,
+        "z": -1.28
+      },
+      "purpose_focus": {
+        "x": 0.498,
+        "y": -7.0,
+        "z": -1.273
+      }
+    }
+  },
+  {
+    "id": "cvpm_apac",
+    "name": "CVPM APAC (Chubb Virtual Portfolio Manager)",
+    "short_name": "CVPM APAC",
+    "family": "Pricing & Portfolio Optimization",
+    "review_status": "Pending Review",
+    "owner": "APAC Portfolio Analytics",
+    "business_unit": "APAC BizPack / Flow",
+    "region_scope": [
+      "APAC"
+    ],
+    "business_purpose": "Support APAC flow business pricing and portfolio management through real-time monitoring, scenario testing, smoothing and simulation models, and unified dashboards that improve time-to-market and profitable growth decisions.",
+    "capabilities": [
+      "portfolio monitoring",
+      "price optimization",
+      "simulation",
+      "scenario testing",
+      "anomaly detection",
+      "decision support",
+      "dashboarding"
+    ],
+    "features": [
+      "monitoring pipeline",
+      "configuration upload",
+      "simulation library",
+      "embedded Power BI dashboards",
+      "model monitoring",
+      "glossary",
+      "report generation"
+    ],
+    "tech_stack": [
+      "AKS",
+      "ADLS",
+      "APIM",
+      "Cosmos DB",
+      "Azure Databricks",
+      "Confluent Kafka",
+      "FastAPI",
+      "Python 3.10",
+      "Power BI",
+      "Snowflake"
+    ],
+    "data_domains": [
+      "policy",
+      "claims",
+      "reference data",
+      "pricing",
+      "submissions",
+      "technical premium",
+      "loss cost",
+      "portfolio metadata"
+    ],
+    "data_classification": "Red SBI",
+    "deployment_regions": [
+      "Southeast Asia (APAC Azure)"
+    ],
+    "models": [
+      "L0 conversion model",
+      "discovery/monitoring model",
+      "smoothing model",
+      "simulator decision engine"
+    ],
+    "users": [
+      "underwriting operations",
+      "IT operations",
+      "pricing analysts",
+      "portfolio managers"
+    ],
+    "interfaces": [
+      "Databricks jobs",
+      "Middleware",
+      "Decision Engine",
+      "Cosmos DB",
+      "ADLS",
+      "Kafka",
+      "Power BI UI"
+    ],
+    "nfr": {
+      "rto_hours": 48,
+      "rpo_hours": 12,
+      "availability": "Mon-Sat business hours, target latency < 5 minutes"
+    },
+    "priority": 5,
+    "notes": "Uses the real CVPM APAC SAS Word document. The TSG section shows SI 5549, while the document history table shows 5591; this workshop displays the explicit TSG SI value.",
+    "source_sections": {
+      "business_purpose": [
+        "Background",
+        "Business Needs and Benefits",
+        "Objectives and Scope"
+      ],
+      "capabilities": [
+        "Logical Architecture",
+        "Architecture Layers",
+        "ML and Analytics"
+      ],
+      "tech_stack": [
+        "Architecture Layers",
+        "Cloud Infrastructure/Services",
+        "Security Questionnaire"
+      ],
+      "data_and_security": [
+        "Data Dependencies \u2013 inputs",
+        "ML and Analytics",
+        "Security Questionnaire"
+      ]
+    },
+    "source_type": "Real SAS document",
+    "document": {
+      "filename": "Solution Architecture Specification CVPM_APAC.docx",
+      "path": "source_materials/real_sas_docs/Solution Architecture Specification CVPM_APAC.docx",
+      "title": "Solution Architecture Specification CVPM APAC(Chubb Virtual Portfolio Manager)",
+      "version": "1.0",
+      "author": "Chubb EA",
+      "issue_date": "08/21/2025",
+      "document_status": "Draft"
+    },
+    "si_number": "5549",
+    "source_excerpt": {
+      "background": "Portfolio+ is a strategic initiative aimed at revolutionizing the Flow business by delivering real-time monitoring and comprehensive insights, enabling a more streamlined price decision-making process and faster time-to-market, all aimed at achieving profitable portfolio growth. The aim of the portfolio optimization project is to dynamically adjust policy terms and pricing while maintaining portfolio risk and growth targets. Traditionally Chubb has achieved these goals with manual intervention and the imposition of rules to govern risk. This SI is covering all the work required to build and deploy Portfolio models and UI in APAC for BizPack",
+      "objectives": "The objective of Portfolio+ is to empower the Flow business with advanced capabilities for real-time monitoring and consolidated insights, enabling more streamlined and effective pricing decisions. The project aims to accelerate time-to-market and support profitable portfolio growth by providing a unified platform for data-driven decision-making. 1. Real-time Monitoring and Actionable Insights: Quickly identify and respond to emerging trends with automated monitoring, advanced diagnostics, and proprietary algorithms\u2014driving both profitability and business growth. 2. Streamlined Decision Making with Scenario Testing: Improve portfolio management through automated alerts, dynamic model updates, and scenario testing powered by proprietary optimization algorithms. This enables rapid, data-driven pricing and underwriting decisions. 3. Dynamic Pricing with Market and Risk Awareness: Adapt pric",
+      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Application URL: CVPM UI UI Component: Provides interface for system interaction, configuration management, and config file uploads. Restricted role to have upload access and Upload feature will enable only for those users. Since it\u2019s via Chubb network there is no further scanning required. Dashboard: Displays processed data, Current Summary reports, Simulation Summary results, and interactive analytics visualizations For Upload configuration we would be constraining restricted role to have upload access and upload button will only be",
+      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d Appendix Reference Documentation Add references to documents tha"
+    },
+    "coords": {
+      "embedding3d": {
+        "x": 3.252,
+        "y": 3.19,
+        "z": 5.816
+      },
+      "tech_focus": {
+        "x": 3.157,
+        "y": 3.129,
+        "z": 5.655
+      },
+      "purpose_focus": {
+        "x": 3.3,
+        "y": 3.248,
+        "z": 5.904
+      }
+    }
+  }
+];
