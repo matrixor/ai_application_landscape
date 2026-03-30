@@ -271,8 +271,7 @@ button.secondary {
   border: 1px solid transparent;
 }
 .badge.sas { background: #fff5db; color: #8a5b00; border-color: #f1d48c; }
-.badge.real-doc { background: #fff5db; color: #8a5b00; border-color: #f1d48c; }
-.badge.familytag { background: #edf2fa; color: #50617a; border-color: #d7e0ec; }
+.badge.synthetic { background: #edf2fa; color: #50617a; border-color: #d7e0ec; }
 .badge.pending { background: #ffe9e8; color: #b3261e; border-color: #ffc2bf; }
 .badge.approved { background: #e9f7ed; color: #256f2a; border-color: #b9e1c1; }
 .badge.review { background: #efe9ff; color: #5a30a3; border-color: #d6c8ff; }
@@ -403,29 +402,6 @@ button.secondary {
   line-height: 1.5;
 }
 .shared-list strong { color: var(--text); }
-
-.excerpt-block {
-  display: grid;
-  gap: 10px;
-}
-.excerpt-card {
-  padding: 10px;
-  border-radius: 12px;
-  background: #fff;
-  border: 1px solid var(--line);
-}
-.excerpt-card .label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 4px;
-  font-weight: 700;
-}
-.excerpt-card .value {
-  display: block;
-  font-size: 13px;
-  line-height: 1.5;
-}
 .section-title {
   display: flex;
   justify-content: space-between;

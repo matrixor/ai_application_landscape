@@ -1,1 +1,1 @@
-v1.6.1-fix-multi-click-after-react
+v1

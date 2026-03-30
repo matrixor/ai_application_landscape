@@ -7,24 +7,24 @@
     'Assistants & Document AI': '#119c92'
   };
   const DEFAULT_WEIGHTS = {
-    purpose: 0.25,
-    capabilities: 0.20,
-    features: 0.15,
-    tech: 0.30,
+    purpose: 0.30,
+    capabilities: 0.25,
+    features: 0.20,
+    tech: 0.15,
     data: 0.10
   };
   const STOPWORDS = new Set([
     'the','and','for','with','from','that','this','into','through','over','across','their','them','will','then','than','using','used','use',
-    'onto','while','where','which','what','when','able','such','like','also','very','more','less','same','different','provide','provides',
-    'support','supports','help','helps','allow','allows','application','solution','platform','business','global','regional','region','teams','team',
-    'project','section','document','architecture','system','data','user','users','process','processes','model','models','service','services'
+    'into','onto','while','where','which','what','when','able','such','like','also','very','more','less','same','different','provide','provides',
+    'support','supports','help','helps','allow','allows','application','solution','platform','business','global','regional','region','teams','team'
   ]);
 
   const STATE = {
-    selectedId: APPS[0]?.id || null,
+    selectedId: APPS.find((app) => app.source_type === 'SAS-derived')?.id || APPS[0]?.id || null,
     weights: { ...DEFAULT_WEIGHTS },
-    threshold: 0.08,
+    threshold: 0.56,
     layoutKey: 'embedding3d',
+    sourceFilter: 'all',
     familyFilter: 'All',
     regionFilter: 'All',
     statusFilter: 'All',
@@ -36,11 +36,11 @@
   };
 
   function titleCase(value) {
-    return String(value || '').replace(/\b\w/g, (m) => m.toUpperCase());
+    return value.replace(/\b\w/g, (m) => m.toUpperCase());
   }
 
   function slug(value) {
-    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '_');
   }
 
   function tokenize(text) {
@@ -53,14 +53,6 @@
     );
   }
 
-  function listTokenSet(items) {
-    const set = new Set();
-    (items || []).forEach((item) => {
-      tokenize(item).forEach((token) => set.add(token));
-    });
-    return set;
-  }
-
   function jaccardFromSets(a, b) {
     const union = new Set([...a, ...b]);
     if (!union.size) return 0;
@@ -71,25 +63,29 @@
     return inter / union.size;
   }
 
-  function sharedFromSets(a, b, limit = 8) {
+  function sharedFromSets(a, b, limit = 6) {
     const shared = [];
     a.forEach((value) => {
       if (b.has(value)) shared.push(value);
     });
-    return shared.sort().slice(0, limit);
+    return shared.slice(0, limit);
   }
 
   function scoreToPct(score) {
     return `${Math.round(score * 100)}%`;
   }
 
+  function formatNumber(score) {
+    return score.toFixed(2);
+  }
+
   APPS.forEach((app) => {
     app._purposeTokens = tokenize(app.business_purpose);
-    app._capSet = listTokenSet(app.capabilities);
-    app._featureSet = listTokenSet(app.features);
-    app._techSet = listTokenSet(app.tech_stack);
-    app._dataSet = listTokenSet(app.data_domains);
-    app._regionSet = listTokenSet(app.region_scope);
+    app._capSet = new Set((app.capabilities || []).map((v) => String(v).toLowerCase()));
+    app._featureSet = new Set((app.features || []).map((v) => String(v).toLowerCase()));
+    app._techSet = new Set((app.tech_stack || []).map((v) => String(v).toLowerCase()));
+    app._dataSet = new Set((app.data_domains || []).map((v) => String(v).toLowerCase()));
+    app._regionSet = new Set((app.region_scope || []).map((v) => String(v).toLowerCase()));
     app._coords = app.coords || {};
   });
 
@@ -132,6 +128,8 @@
 
   function getVisibleApps() {
     return APPS.filter((app) => {
+      if (STATE.sourceFilter === 'sas' && app.source_type !== 'SAS-derived') return false;
+      if (STATE.sourceFilter === 'synthetic' && app.source_type === 'SAS-derived') return false;
       if (STATE.familyFilter !== 'All' && app.family !== STATE.familyFilter) return false;
       if (STATE.statusFilter !== 'All' && app.review_status !== STATE.statusFilter) return false;
       if (STATE.regionFilter !== 'All' && !(app.region_scope || []).includes(STATE.regionFilter)) return false;
@@ -145,7 +143,7 @@
     return visibleApps[0] || null;
   }
 
-  function getNeighbors(app, population, limit = 4) {
+  function getNeighbors(app, population, limit = 5) {
     return population
       .filter((candidate) => candidate.id !== app.id)
       .map((candidate) => ({ app: candidate, ...scorePair(app, candidate) }))
@@ -153,53 +151,69 @@
       .slice(0, limit);
   }
 
-  function getClosestAlternative(app, population = APPS) {
-    return getNeighbors(app, population, 1)[0] || null;
+  function getNearestApproved(app) {
+    return APPS
+      .filter((candidate) => candidate.id !== app.id && candidate.review_status === 'Approved')
+      .map((candidate) => ({ app: candidate, ...scorePair(app, candidate) }))
+      .sort((a, b) => b.score - a.score)[0] || null;
   }
 
-  function getRecommendation(app, population = APPS) {
-    const nearest = getClosestAlternative(app, population);
-    if (!nearest) {
+  function getRecommendation(app) {
+    const nearestApproved = getNearestApproved(app);
+    if (app.review_status === 'Approved') {
       return {
-        label: 'Only item in view',
+        label: 'Approved baseline',
         className: 'rec-novel',
-        reason: 'No other application is available in the current filtered set.',
-        nearest,
+        reason: 'This application is already approved and acts as a reusable comparison point.',
+        nearestApproved,
+        novelty: 0
       };
     }
-    if (nearest.score >= 0.15) {
+    if (!nearestApproved) {
       return {
-        label: 'Check for overlap',
+        label: 'Novel',
+        className: 'rec-novel',
+        reason: 'No approved alternative was found in the current workshop dataset.',
+        nearestApproved: null,
+        novelty: 1
+      };
+    }
+    const novelty = 1 - nearestApproved.score;
+    if (nearestApproved.score >= 0.82) {
+      return {
+        label: 'Potential duplicate',
         className: 'rec-duplicate',
-        reason: 'This application shares enough dimensions with another current app that Alan should explicitly check for reuse, consolidation, or a narrower regional extension.',
-        nearest,
+        reason: 'High similarity to an already approved application. Review whether this should be consolidated or handled as an extension.',
+        nearestApproved,
+        novelty
       };
     }
-    if (nearest.score >= 0.09) {
+    if (nearestApproved.score >= 0.68) {
       return {
-        label: 'Shared platform patterns',
+        label: 'Likely variant / extension',
         className: 'rec-variant',
-        reason: 'There are meaningful shared patterns, especially in the technology stack or operating model, but the business purpose still looks different.',
-        nearest,
+        reason: 'Similar enough to suggest reuse or regional extension, but still distinct enough to warrant design review.',
+        nearestApproved,
+        novelty
       };
     }
     return {
-      label: 'Distinct pattern',
+      label: 'Novel',
       className: 'rec-novel',
-      reason: 'This application appears materially different from the current real-document set and likely needs an independent review path.',
-      nearest,
+      reason: 'Distinct from the approved landscape and likely requires a full review path.',
+      nearestApproved,
+      novelty
     };
   }
 
   function statusClass(status) {
-    const value = String(status || '').toLowerCase();
-    if (value.includes('approved')) return 'approved';
-    if (value.includes('pending')) return 'pending';
+    if (status === 'Approved') return 'approved';
+    if (status === 'Pending') return 'pending';
     return 'review';
   }
 
-  function sourceClass() {
-    return 'real-doc';
+  function sourceClass(sourceType) {
+    return sourceType === 'SAS-derived' ? 'sas' : 'synthetic';
   }
 
   function badgeHtml(text, className) {
@@ -207,8 +221,7 @@
   }
 
   function pills(items, flavor = 'pill') {
-    if (!items || !items.length) return '<div class="muted">None</div>';
-    return `<div class="pills">${items.map((item) => `<span class="${flavor}">${item}</span>`).join('')}</div>`;
+    return `<div class="pills">${(items || []).map((item) => `<span class="${flavor}">${item}</span>`).join('')}</div>`;
   }
 
   function setText(id, value) {
@@ -230,6 +243,7 @@
     fillSelect('regionFilter', regions);
     fillSelect('statusFilter', statuses);
 
+    document.getElementById('sourceFilter').value = STATE.sourceFilter;
     document.getElementById('familyFilter').value = STATE.familyFilter;
     document.getElementById('regionFilter').value = STATE.regionFilter;
     document.getElementById('statusFilter').value = STATE.statusFilter;
@@ -252,10 +266,10 @@
   }
 
   function updateStats(visibleApps) {
-    const docCount = visibleApps.filter((app) => app.source_type === 'Real SAS document').length;
-    const reviewCount = visibleApps.filter((app) => !String(app.review_status).toLowerCase().includes('approved')).length;
+    const sasCount = visibleApps.filter((app) => app.source_type === 'SAS-derived').length;
+    const reviewCount = visibleApps.filter((app) => app.review_status !== 'Approved').length;
     setText('statTotal', String(visibleApps.length));
-    setText('statDocs', String(docCount));
+    setText('statSas', String(sasCount));
     setText('statReview', String(reviewCount));
   }
 
@@ -278,8 +292,8 @@
     });
 
     if (selectedApp) {
-      getNeighbors(selectedApp, visibleApps, 3)
-        .filter((item) => item.score >= Math.max(STATE.threshold - 0.02, 0.01))
+      getNeighbors(selectedApp, visibleApps, 5)
+        .filter((item) => item.score >= Math.max(STATE.threshold - 0.05, 0.20))
         .forEach((item) => addPair(highlightedPairs, selectedApp, item.app, item));
     }
 
@@ -312,33 +326,28 @@
     };
   }
 
-  function nodeTrace(visibleApps, selectedApp) {
+  function nodeTrace(visibleApps) {
     return {
       type: 'scatter3d',
       mode: 'markers+text',
-      ids: visibleApps.map((app) => app.id),
       x: visibleApps.map((app) => (app._coords[STATE.layoutKey] || app._coords.embedding3d).x),
       y: visibleApps.map((app) => (app._coords[STATE.layoutKey] || app._coords.embedding3d).y),
       z: visibleApps.map((app) => (app._coords[STATE.layoutKey] || app._coords.embedding3d).z),
       text: visibleApps.map((app) => app.short_name),
       textposition: 'top center',
-      textfont: { size: 11, color: '#344256' },
-      customdata: visibleApps.map((app) => [app.id, app.family, app.review_status, app.document?.title || '', app.document?.issue_date || '']),
+      textfont: { size: 10, color: '#344256' },
+      customdata: visibleApps.map((app) => [app.id, app.family, app.source_type, app.review_status]),
       hovertemplate:
         '<b>%{text}</b><br>' +
         '%{customdata[1]}<br>' +
-        'Status: %{customdata[2]}<br>' +
-        'Doc: %{customdata[3]}<br>' +
-        'Issue date: %{customdata[4]}<extra></extra>',
+        'Source: %{customdata[2]}<br>' +
+        'Status: %{customdata[3]}<extra></extra>',
       marker: {
-        size: visibleApps.map((app) => {
-          const base = 12 + (app.priority || 1);
-          return selectedApp && app.id === selectedApp.id ? base + 8 : base;
-        }),
+        size: visibleApps.map((app) => 8 + (app.priority || 1) + (app.source_type === 'SAS-derived' ? 2 : 0)),
         color: visibleApps.map((app) => FAMILY_COLORS[app.family] || '#64748b'),
-        opacity: 0.95,
+        opacity: 0.92,
         line: {
-          color: 'rgba(255,255,255,0.9)',
+          color: 'rgba(255,255,255,0.85)',
           width: 1.5
         }
       },
@@ -346,108 +355,42 @@
     };
   }
 
-  function resolveClickedAppId(point, graphDiv) {
-    if (!point) return null;
-
-    if (
-      graphDiv &&
-      Number.isInteger(point.curveNumber) &&
-      point.curveNumber === graphDiv._nodeTraceIndex &&
-      Number.isInteger(point.pointNumber)
-    ) {
-      const mappedId = graphDiv._nodeIds?.[point.pointNumber];
-      if (mappedId && APP_BY_ID[mappedId]) return mappedId;
-    }
-
-    if (point.id && APP_BY_ID[point.id]) return point.id;
-
-    if (point.data?.ids && Number.isInteger(point.pointNumber)) {
-      const idFromPointData = point.data.ids[point.pointNumber];
-      if (idFromPointData && APP_BY_ID[idFromPointData]) return idFromPointData;
-    }
-
-    if (graphDiv?.data && Number.isInteger(point.curveNumber) && Number.isInteger(point.pointNumber)) {
-      const idFromGraph = graphDiv.data[point.curveNumber]?.ids?.[point.pointNumber];
-      if (idFromGraph && APP_BY_ID[idFromGraph]) return idFromGraph;
-    }
-
-    if (Array.isArray(point.customdata) && APP_BY_ID[point.customdata[0]]) return point.customdata[0];
-    return null;
-  }
-
-  function bindGraphEvents(graphDiv) {
-    if (graphDiv.removeAllListeners) {
-      graphDiv.removeAllListeners('plotly_click');
-      graphDiv.removeAllListeners('plotly_hover');
-      graphDiv.removeAllListeners('plotly_unhover');
-      graphDiv.removeAllListeners('plotly_relayout');
-    }
-
-    // Track the hovered node id. On some Plotly scatter3d builds, hover fires
-    // more reliably than click during camera interaction.
-    graphDiv.on('plotly_hover', (event) => {
-      const nodePoint = (event.points || []).find(
-        (p) => typeof graphDiv._nodeTraceIndex === 'number' && p.curveNumber === graphDiv._nodeTraceIndex
-      );
-      graphDiv._hoveredAppId = nodePoint ? resolveClickedAppId(nodePoint, graphDiv) : null;
-    });
-    graphDiv.on('plotly_unhover', () => {
-      graphDiv._hoveredAppId = null;
-    });
-
-    // Primary Plotly click path.
-    graphDiv.on('plotly_click', (event) => {
-      const nodePoint = (event.points || []).find(
-        (p) => typeof graphDiv._nodeTraceIndex === 'number' ? p.curveNumber === graphDiv._nodeTraceIndex : true
-      );
-      const point = nodePoint || (event.points || []).find((p) => !!resolveClickedAppId(p, graphDiv));
-      const selectedId = resolveClickedAppId(point, graphDiv);
-      if (!selectedId) return;
-      STATE.selectedId = selectedId;
-      renderAll();
-    });
-
-    graphDiv.on('plotly_relayout', () => {
-      if (STATE.internalRelayout) return;
-      if (STATE.spin) {
-        STATE.spin = false;
-        document.getElementById('spinToggle').checked = false;
-        stopSpin();
-      }
-    });
-
-    // Native mousedown/mouseup click detection for scatter3d. Camera drag can
-    // suppress plotly_click, so a true click with very small pointer movement
-    // selects whichever node is currently hovered.
-    if (!graphDiv._domBound) {
-      let mouseDownPos = null;
-      graphDiv.addEventListener('mousedown', (e) => {
-        mouseDownPos = { x: e.clientX, y: e.clientY };
-      });
-      graphDiv.addEventListener('mouseup', (e) => {
-        if (!mouseDownPos) return;
-        const dx = e.clientX - mouseDownPos.x;
-        const dy = e.clientY - mouseDownPos.y;
-        mouseDownPos = null;
-        if (Math.sqrt((dx * dx) + (dy * dy)) > 6) return; // drag - ignore
-        const id = graphDiv._hoveredAppId;
-        if (id && APP_BY_ID[id]) {
-          STATE.selectedId = id;
-          renderAll();
+  function outlinedTrace(apps, width) {
+    if (!apps.length) return null;
+    return {
+      type: 'scatter3d',
+      mode: 'markers',
+      x: apps.map((app) => (app._coords[STATE.layoutKey] || app._coords.embedding3d).x),
+      y: apps.map((app) => (app._coords[STATE.layoutKey] || app._coords.embedding3d).y),
+      z: apps.map((app) => (app._coords[STATE.layoutKey] || app._coords.embedding3d).z),
+      hoverinfo: 'skip',
+      marker: {
+        size: apps.map((app) => 12 + (app.priority || 1)),
+        color: 'rgba(255,255,255,0)',
+        opacity: 1,
+        line: {
+          color: '#111827',
+          width
         }
-      });
-      graphDiv._domBound = true;
-    }
+      },
+      showlegend: false
+    };
   }
 
   function renderPlot(visibleApps, selectedApp) {
     const graphDiv = document.getElementById('graph');
     const edges = collectEdges(visibleApps, selectedApp);
     const traces = [];
-    if (edges.generic.length) traces.push(edgeTrace(edges.generic, 'rgba(120,138,160,0.25)', 2));
-    if (edges.highlighted.length) traces.push(edgeTrace(edges.highlighted, 'rgba(39,110,241,0.8)', 5));
-    const nodeTraceIndex = traces.length;
-    traces.push(nodeTrace(visibleApps, selectedApp));
+    if (edges.generic.length) traces.push(edgeTrace(edges.generic, 'rgba(120,138,160,0.24)', 2));
+    if (edges.highlighted.length) traces.push(edgeTrace(edges.highlighted, 'rgba(39,110,241,0.78)', 5));
+    traces.push(nodeTrace(visibleApps));
+    const sasApps = visibleApps.filter((app) => app.source_type === 'SAS-derived');
+    const sasTrace = outlinedTrace(sasApps, 3);
+    if (sasTrace) traces.push(sasTrace);
+    if (selectedApp) {
+      const selectedTrace = outlinedTrace([selectedApp], 6);
+      if (selectedTrace) traces.push(selectedTrace);
+    }
 
     const layout = {
       margin: { l: 0, r: 0, t: 0, b: 0 },
@@ -468,22 +411,50 @@
       }
     };
 
-    const renderToken = (graphDiv._renderToken || 0) + 1;
-    graphDiv._renderToken = renderToken;
-    graphDiv._nodeTraceIndex = nodeTraceIndex;
-    graphDiv._nodeIds = visibleApps.map((app) => app.id);
-    graphDiv._hoveredAppId = null;
-
     Plotly.react(graphDiv, traces, layout, {
       displayModeBar: false,
       responsive: true,
       scrollZoom: true
-    }).then(() => {
-      // Plotly.react can recreate the internal event emitter. Bind handlers only
-      // after the render promise settles, and ignore stale async completions.
-      if (graphDiv._renderToken !== renderToken) return;
-      bindGraphEvents(graphDiv);
     });
+
+    if (!graphDiv._workshopBound) {
+      graphDiv.on('plotly_click', (event) => {
+        const point = event.points?.find((p) => Array.isArray(p.customdata));
+        if (!point) return;
+        STATE.selectedId = point.customdata[0];
+        renderAll();
+      });
+      graphDiv.on('plotly_relayout', () => {
+        if (STATE.internalRelayout) return;
+        if (STATE.spin) {
+          STATE.spin = false;
+          document.getElementById('spinToggle').checked = false;
+          stopSpin();
+        }
+      });
+      graphDiv._workshopBound = true;
+    }
+  }
+
+  function recommendationHtml(rec) {
+    if (!rec) return '';
+    const nearest = rec.nearestApproved;
+    return `
+      <div class="approval-card">
+        <div class="badge-row">${badgeHtml(rec.label, rec.className)}</div>
+        <div class="headline">${rec.reason}</div>
+        ${nearest ? `
+          <div class="subline">Nearest approved alternative: <strong>${nearest.app.name}</strong> · similarity ${scoreToPct(nearest.score)} · novelty ${scoreToPct(rec.novelty)}</div>
+          <div class="score-block">
+            ${scoreRowHtml('Purpose', nearest.purpose)}
+            ${scoreRowHtml('Capabilities', nearest.capabilities)}
+            ${scoreRowHtml('Features', nearest.features)}
+            ${scoreRowHtml('Tech stack', nearest.tech)}
+            ${scoreRowHtml('Data / security', nearest.data)}
+          </div>
+        ` : '<div class="subline">No approved alternative in the current workshop set.</div>'}
+      </div>
+    `;
   }
 
   function scoreRowHtml(label, value) {
@@ -496,99 +467,39 @@
     `;
   }
 
-  function recommendationHtml(rec) {
-    if (!rec) return '';
-    const nearest = rec.nearest;
-    return `
-      <div class="approval-card">
-        <div class="badge-row">${badgeHtml(rec.label, rec.className)}</div>
-        <div class="headline">${rec.reason}</div>
-        ${nearest ? `
-          <div class="subline">Closest current application: <strong>${nearest.app.name}</strong> · similarity ${scoreToPct(nearest.score)}</div>
-          <div class="score-block">
-            ${scoreRowHtml('Purpose', nearest.purpose)}
-            ${scoreRowHtml('Capabilities', nearest.capabilities)}
-            ${scoreRowHtml('Features', nearest.features)}
-            ${scoreRowHtml('Tech stack', nearest.tech)}
-            ${scoreRowHtml('Data / security', nearest.data)}
-          </div>
-        ` : '<div class="subline">No comparable application in the current filtered set.</div>'}
-      </div>
-    `;
-  }
-
-  function documentHtml(app) {
-    const doc = app.document || {};
-    const docHref = doc.path ? encodeURI(doc.path) : '#';
+  function evidenceHtml(app) {
+    if (!app.evidence_pages) return '';
+    const groups = Object.entries(app.evidence_pages)
+      .map(([section, files]) => {
+        const links = files.map((file) => `<a href="source_materials/evidence_pages/${file}" target="_blank">${file.split('/').pop()}</a>`).join(', ');
+        return `<div class="meta-item"><span class="label">${titleCase(section.replace(/_/g, ' '))}</span><span class="value">${links}</span></div>`;
+      })
+      .join('');
     return `
       <div class="field-block">
-        <div class="section-title"><h3>Source SAS document</h3><span class="small-note">Linked back to the real Word document.</span></div>
-        <div class="meta-grid">
-          <div class="meta-item"><span class="label">Document title</span><span class="value">${doc.title || app.name}</span></div>
-          <div class="meta-item"><span class="label">Filename</span><span class="value"><a href="${docHref}" target="_blank">${doc.filename || 'Open document'}</a></span></div>
-          <div class="meta-item"><span class="label">Version / issue date</span><span class="value">${doc.version || '—'} / ${doc.issue_date || '—'}</span></div>
-          <div class="meta-item"><span class="label">Document status</span><span class="value">${doc.document_status || '—'}</span></div>
-        </div>
-      </div>
-    `;
-  }
-
-  function sourceSectionsHtml(app) {
-    const sections = app.source_sections || {};
-    const tags = [];
-    Object.entries(sections).forEach(([field, values]) => {
-      values.forEach((value) => tags.push(`${titleCase(field.replace(/_/g, ' '))}: ${value}`));
-    });
-    return `
-      <div class="field-block">
-        <div class="section-title"><h3>SAS traceability</h3><span class="small-note">Sections used to build the normalized profile.</span></div>
-        ${pills(tags, 'pill neutral')}
-      </div>
-    `;
-  }
-
-  function sourceExcerptHtml(app) {
-    const excerpt = app.source_excerpt || {};
-    const cards = [
-      ['Background excerpt', excerpt.background],
-      ['Objectives excerpt', excerpt.objectives],
-      ['Architecture excerpt', excerpt.architecture_layers],
-      ['Security excerpt', excerpt.security],
-    ].filter(([, value]) => value);
-
-    if (!cards.length) return '';
-    return `
-      <div class="field-block">
-        <div class="section-title"><h3>Source excerpts</h3><span class="small-note">Short snippets extracted from the SAS document.</span></div>
-        <div class="excerpt-block">
-          ${cards.map(([label, value]) => `
-            <div class="excerpt-card">
-              <span class="label">${label}</span>
-              <span class="value">${value}</span>
-            </div>
-          `).join('')}
-        </div>
+        <div class="section-title"><h3>Source evidence</h3><span class="small-note">Open the selected pages used to build this profile.</span></div>
+        <div class="meta-grid">${groups}</div>
       </div>
     `;
   }
 
   function neighborCardHtml(item) {
     const sharedBits = [];
-    if (item.sharedCapabilities.length) sharedBits.push(`<strong>Shared capability keywords:</strong> ${item.sharedCapabilities.join(', ')}`);
-    if (item.sharedTech.length) sharedBits.push(`<strong>Shared stack keywords:</strong> ${item.sharedTech.join(', ')}`);
-    if (item.sharedFeatures.length) sharedBits.push(`<strong>Shared feature keywords:</strong> ${item.sharedFeatures.join(', ')}`);
-    if (item.sharedData.length) sharedBits.push(`<strong>Shared data keywords:</strong> ${item.sharedData.join(', ')}`);
-    if (!sharedBits.length && item.sharedPurpose.length) sharedBits.push(`<strong>Shared purpose keywords:</strong> ${item.sharedPurpose.join(', ')}`);
+    if (item.sharedCapabilities.length) sharedBits.push(`<strong>Shared capabilities:</strong> ${item.sharedCapabilities.join(', ')}`);
+    if (item.sharedTech.length) sharedBits.push(`<strong>Shared stack:</strong> ${item.sharedTech.join(', ')}`);
+    if (item.sharedFeatures.length) sharedBits.push(`<strong>Shared features:</strong> ${item.sharedFeatures.join(', ')}`);
+    if (item.sharedData.length) sharedBits.push(`<strong>Shared data:</strong> ${item.sharedData.join(', ')}`);
+    if (!sharedBits.length && item.sharedPurpose.length) sharedBits.push(`<strong>Shared purpose terms:</strong> ${item.sharedPurpose.join(', ')}`);
     return `
       <div class="neighbor-card">
         <div class="neighbor-top">
           <div>
             <div class="neighbor-title"><a href="#" class="app-jump" data-app-id="${item.app.id}">${item.app.name}</a></div>
-            <div class="neighbor-subtitle">${item.app.family} · ${item.app.review_status}</div>
+            <div class="neighbor-subtitle">${item.app.family} · ${item.app.review_status} · ${item.app.source_type}</div>
           </div>
           <div class="score-pill">${scoreToPct(item.score)}</div>
         </div>
-        <div class="shared-list">${sharedBits.join('<br>') || '<strong>Limited direct overlap.</strong> Similarity is mainly driven by broader profile proximity.'}</div>
+        <div class="shared-list">${sharedBits.join('<br>') || '<strong>Limited direct overlap.</strong> Similarity is mostly driven by broader profile proximity.'}</div>
         <div class="score-block" style="margin-top:10px;">
           ${scoreRowHtml('Purpose', item.purpose)}
           ${scoreRowHtml('Capabilities', item.capabilities)}
@@ -607,8 +518,8 @@
       return;
     }
 
-    const rec = getRecommendation(selectedApp, visibleApps.length > 1 ? visibleApps : APPS);
-    const neighbors = getNeighbors(selectedApp, visibleApps.length > 1 ? visibleApps : APPS, 3);
+    const rec = getRecommendation(selectedApp);
+    const neighbors = getNeighbors(selectedApp, visibleApps.length > 1 ? visibleApps : APPS, 5);
 
     container.innerHTML = `
       <div class="app-header">
@@ -616,15 +527,15 @@
           <div class="badge-row">
             ${badgeHtml(selectedApp.source_type, sourceClass(selectedApp.source_type))}
             ${badgeHtml(selectedApp.review_status, statusClass(selectedApp.review_status))}
-            ${badgeHtml(selectedApp.family, 'familytag')}
+            ${badgeHtml(selectedApp.family, 'synthetic')}
           </div>
           <h2 style="margin:10px 0 6px;">${selectedApp.name}</h2>
-          <div class="small-note">Axes are latent-style 3D coordinates. The real review dimensions extracted from the SAS are listed below.</div>
+          <div class="small-note">Axes are latent-style 3D coordinates. The real review dimensions are listed below.</div>
         </div>
       </div>
 
       <div class="field-block">
-        <div class="section-title"><h3>Dimensions behind this dot</h3><span class="small-note">The normalized review profile built from the SAS.</span></div>
+        <div class="section-title"><h3>Dimensions behind this dot</h3><span class="small-note">What actually drove the profile.</span></div>
         <p>${selectedApp.business_purpose}</p>
       </div>
 
@@ -633,15 +544,12 @@
         <div class="meta-item"><span class="label">SI number</span><span class="value">${selectedApp.si_number}</span></div>
         <div class="meta-item"><span class="label">Regions</span><span class="value">${(selectedApp.region_scope || []).join(', ')}</span></div>
         <div class="meta-item"><span class="label">Data classification</span><span class="value">${selectedApp.data_classification}</span></div>
-        <div class="meta-item"><span class="label">Deployment regions</span><span class="value">${(selectedApp.deployment_regions || []).join(', ')}</span></div>
-        <div class="meta-item"><span class="label">Availability / recovery</span><span class="value">${selectedApp.nfr?.availability || '—'} · RTO ${selectedApp.nfr?.rto_hours ?? '—'}h · RPO ${selectedApp.nfr?.rpo_hours ?? '—'}h</span></div>
       </div>
 
       <div class="field-block"><h3>Capabilities</h3>${pills(selectedApp.capabilities, 'pill')}</div>
       <div class="field-block"><h3>Features</h3>${pills(selectedApp.features, 'pill alt')}</div>
       <div class="field-block"><h3>Tech stack</h3>${pills(selectedApp.tech_stack, 'pill soft')}</div>
       <div class="field-block"><h3>Data + models</h3>${pills([...(selectedApp.data_domains || []), ...(selectedApp.models || [])], 'pill neutral')}</div>
-      <div class="field-block"><h3>Notes</h3><p>${selectedApp.notes || 'No additional notes.'}</p></div>
 
       ${recommendationHtml(rec)}
 
@@ -650,9 +558,7 @@
         ${neighbors.map(neighborCardHtml).join('') || '<div class="placeholder">No comparable applications in the current view.</div>'}
       </div>
 
-      ${documentHtml(selectedApp)}
-      ${sourceSectionsHtml(selectedApp)}
-      ${sourceExcerptHtml(selectedApp)}
+      ${evidenceHtml(selectedApp)}
     `;
 
     container.querySelectorAll('.app-jump').forEach((link) => {
@@ -666,10 +572,11 @@
 
   function renderQueue(visibleApps) {
     const rows = visibleApps
-      .map((app) => ({ app, rec: getRecommendation(app, visibleApps.length > 1 ? visibleApps : APPS) }))
+      .filter((app) => app.review_status !== 'Approved')
+      .map((app) => ({ app, rec: getRecommendation(app) }))
       .sort((a, b) => {
-        const scoreA = a.rec.nearest ? a.rec.nearest.score : -1;
-        const scoreB = b.rec.nearest ? b.rec.nearest.score : -1;
+        const scoreA = a.rec.nearestApproved ? a.rec.nearestApproved.score : -1;
+        const scoreB = b.rec.nearestApproved ? b.rec.nearestApproved.score : -1;
         if (scoreB !== scoreA) return scoreB - scoreA;
         return (b.app.priority || 0) - (a.app.priority || 0);
       });
@@ -681,12 +588,12 @@
     }
 
     body.innerHTML = rows.map(({ app, rec }) => {
-      const nearest = rec.nearest;
+      const nearest = rec.nearestApproved;
       return `
         <div class="queue-row">
           <div class="queue-cell"><a href="#" class="queue-link" data-app-id="${app.id}">${app.name}</a><span class="queue-sub">${app.family} · ${app.source_type}</span></div>
           <div class="queue-cell">${app.review_status}</div>
-          <div class="queue-cell">${nearest ? `<strong>${nearest.app.short_name}</strong><span class="queue-sub">${nearest.app.family}</span>` : '<span class="muted">None in set</span>'}</div>
+          <div class="queue-cell">${nearest ? `<strong>${nearest.app.short_name}</strong><span class="queue-sub">${nearest.app.review_status}</span>` : '<span class="muted">None in set</span>'}</div>
           <div class="queue-cell">${nearest ? scoreToPct(nearest.score) : '—'}</div>
           <div class="queue-cell">${badgeHtml(rec.label, rec.className)}</div>
         </div>
@@ -707,10 +614,11 @@
     legend.innerHTML = Object.entries(FAMILY_COLORS)
       .map(([family, color]) => `<div class="legend-item"><span class="legend-dot" style="background:${color}"></span><span>${family}</span></div>`)
       .join('') +
-      '<div class="legend-item"><span class="legend-square"></span><span>Selected node is rendered larger</span></div>';
+      '<div class="legend-item"><span class="legend-square"></span><span>SAS-derived node outline</span></div>';
   }
 
   function readControls() {
+    STATE.sourceFilter = document.getElementById('sourceFilter').value;
     STATE.familyFilter = document.getElementById('familyFilter').value;
     STATE.regionFilter = document.getElementById('regionFilter').value;
     STATE.statusFilter = document.getElementById('statusFilter').value;
@@ -739,8 +647,9 @@
 
   function resetControls() {
     STATE.weights = { ...DEFAULT_WEIGHTS };
-    STATE.threshold = 0.08;
+    STATE.threshold = 0.56;
     STATE.layoutKey = 'embedding3d';
+    STATE.sourceFilter = 'all';
     STATE.familyFilter = 'All';
     STATE.regionFilter = 'All';
     STATE.statusFilter = 'All';
@@ -782,7 +691,7 @@
   }
 
   function bindEvents() {
-    ['familyFilter', 'regionFilter', 'statusFilter', 'layoutFilter', 'thresholdSlider', 'purposeWeight', 'capabilitiesWeight', 'featuresWeight', 'techWeight', 'dataWeight', 'spinToggle']
+    ['sourceFilter', 'familyFilter', 'regionFilter', 'statusFilter', 'layoutFilter', 'thresholdSlider', 'purposeWeight', 'capabilitiesWeight', 'featuresWeight', 'techWeight', 'dataWeight', 'spinToggle']
       .forEach((id) => {
         const el = document.getElementById(id);
         const eventName = el.type === 'range' ? 'input' : 'change';

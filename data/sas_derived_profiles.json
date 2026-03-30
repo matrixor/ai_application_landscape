@@ -1,0 +1,52 @@
+[
+  {
+    "id": "quantexa",
+    "name": "Quantexa",
+    "family": "Fraud & Entity Intelligence",
+    "source_type": "SAS-derived",
+    "review_status": "Pending",
+    "business_unit": "GDP",
+    "region_scope": ["Global"],
+    "si_number": "5145",
+    "business_purpose": "Provide entity resolution and network fraud detection on Chubb's Global Data Platform so investigators can unify entities across disparate sources, generate fraud networks, score risks, and investigate suspicious patterns through an interactive UI.",
+    "capabilities": ["entity resolution", "graph analytics", "fraud detection", "dynamic scoring", "investigation workflow", "network generation"],
+    "features": ["batch ingestion", "real-time search", "task loading", "alert generation", "investigator UI", "metadata management"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Elasticsearch", "PostgreSQL", "APIM", "Azure Active Directory", "Azure Key Vault"],
+    "data_domains": ["documents", "individuals", "businesses", "addresses", "emails", "phones"],
+    "data_classification": "TBD / Platform scope",
+    "deployment_regions": ["US East 2", "Central US"],
+    "models": ["network fraud model", "dynamic entity resolution", "dynamic scoring"],
+    "evidence_pages": {
+      "business": ["Quantexa/IMG_1175.jpg", "Quantexa/IMG_1176.jpg"],
+      "application_architecture": ["Quantexa/IMG_1179.jpg", "Quantexa/IMG_1180.jpg", "Quantexa/IMG_1181.jpg"],
+      "data_architecture": ["Quantexa/IMG_1182.jpg"],
+      "infrastructure": ["Quantexa/IMG_1185.jpg", "Quantexa/IMG_1186.jpg", "Quantexa/IMG_1187.jpg"],
+      "security": ["Quantexa/IMG_1191.jpg", "Quantexa/IMG_1192.jpg", "Quantexa/IMG_1193.jpg", "Quantexa/IMG_1194.jpg"]
+    }
+  },
+  {
+    "id": "cvpm_core_apac",
+    "name": "CVPM Core APAC",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "SAS-derived",
+    "review_status": "Pending",
+    "business_unit": "APAC BizPack / Flow",
+    "region_scope": ["APAC"],
+    "si_number": "6502",
+    "business_purpose": "Provide flow business monitoring and portfolio management for APAC BizPack by combining discovery analytics, conversion and smoothing models, simulation tools, dashboards, and decision support for pricing actions.",
+    "capabilities": ["portfolio monitoring", "conversion modeling", "price optimization", "anomaly detection", "simulation", "decision support"],
+    "features": ["real-time dashboards", "alerts", "scenario testing", "smoothing controls", "simulator UI", "Power BI views"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Cosmos DB", "Confluent Kafka", "Power BI", "Azure Active Directory", "APIM"],
+    "data_domains": ["policy", "claims", "pricing", "submissions", "reference data", "portfolios"],
+    "data_classification": "Red SBI",
+    "deployment_regions": ["Southeast Asia", "East Asia"],
+    "models": ["L0 conversion model", "monitoring/discovery model", "smoothing model", "simulator / decision engine"],
+    "evidence_pages": {
+      "business": ["CVPM Core APAC/IMG_1291.jpg", "CVPM Core APAC/IMG_1293.jpg"],
+      "application_architecture": ["CVPM Core APAC/IMG_1295.jpg", "CVPM Core APAC/IMG_1296.jpg", "CVPM Core APAC/IMG_1301.jpg"],
+      "data_architecture": ["CVPM Core APAC/IMG_1303.jpg", "CVPM Core APAC/IMG_1304.jpg", "CVPM Core APAC/IMG_1305.jpg"],
+      "infrastructure": ["CVPM Core APAC/IMG_1306.jpg", "CVPM Core APAC/IMG_1307.jpg", "CVPM Core APAC/IMG_1308.jpg", "CVPM Core APAC/IMG_1309.jpg"],
+      "security": ["CVPM Core APAC/IMG_1310.jpg", "CVPM Core APAC/IMG_1311.jpg", "CVPM Core APAC/IMG_1312.jpg"]
+    }
+  }
+]

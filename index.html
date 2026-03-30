@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Application Landscape Workshop v1.6.1</title>
-  <link rel="stylesheet" href="assets/workshop.css?v=1.6.1">
+  <title>AI Application Landscape Workshop v1</title>
+  <link rel="stylesheet" href="assets/workshop.css">
 </head>
 <body>
   <div class="shell">
     <header class="topbar">
       <div class="title-row">
         <div class="title-block">
-          <h1>AI Application Landscape Workshop v1.6.1</h1>
+          <h1>AI Application Landscape Workshop v1</h1>
           <p>
-            Interactive 3D demo for Alan’s AI application review workbench. This build uses only the attached real SAS Word documents.
-            Click any dot to inspect the extracted dimensions, source-document traceability, and closest current application.
+            Interactive 3D demo for Alan’s AI application review workbench. The map shows seeded similarity neighborhoods,
+            while the live explanation logic scores business purpose, capabilities, features, tech stack, and data/security overlap.
           </p>
         </div>
         <div class="top-stats">
           <div class="stat-chip"><span class="value" id="statTotal">0</span><span class="label">Visible apps</span></div>
-          <div class="stat-chip"><span class="value" id="statDocs">0</span><span class="label">Real SAS docs</span></div>
+          <div class="stat-chip"><span class="value" id="statSas">0</span><span class="label">SAS-derived</span></div>
           <div class="stat-chip"><span class="value" id="statReview">0</span><span class="label">Need review</span></div>
         </div>
       </div>
@@ -29,13 +29,13 @@
       <aside class="panel controls">
         <div class="panel-body">
           <h2>Controls</h2>
-          <p class="small-note">Change the landscape lens, filter the current document set, and tune how similarity is explained.</p>
+          <p class="small-note">Use these controls to switch the landscape lens, filter the population, and change how similarity is explained.</p>
 
           <div class="section">
             <h3>Landscape lens</h3>
             <div class="control-grid">
               <div>
-                <label class="control-label" for="layoutFilter"><span>Lens</span><span class="range-value">real-SAS layouts</span></label>
+                <label class="control-label" for="layoutFilter"><span>Lens</span><span class="range-value">v1 seeded layouts</span></label>
                 <select id="layoutFilter">
                   <option value="embedding3d">Balanced landscape</option>
                   <option value="tech_focus">Tech stack emphasis</option>
@@ -53,6 +53,14 @@
             <h3>Filters</h3>
             <div class="control-grid">
               <div>
+                <label class="control-label" for="sourceFilter"><span>Source</span></label>
+                <select id="sourceFilter">
+                  <option value="all">All apps</option>
+                  <option value="sas">SAS-derived only</option>
+                  <option value="synthetic">Workshop seed only</option>
+                </select>
+              </div>
+              <div>
                 <label class="control-label" for="familyFilter"><span>Family</span></label>
                 <select id="familyFilter"></select>
               </div>
@@ -61,7 +69,7 @@
                 <select id="regionFilter"></select>
               </div>
               <div>
-                <label class="control-label" for="statusFilter"><span>Review status</span></label>
+                <label class="control-label" for="statusFilter"><span>Status</span></label>
                 <select id="statusFilter"></select>
               </div>
             </div>
@@ -69,34 +77,34 @@
 
           <div class="section">
             <h3>Similarity weights</h3>
-            <p class="small-note">Weights update the relationship edges, nearest-neighbor breakdowns, and review cue in real time.</p>
+            <p class="small-note">These weights update the relationship edges, approval queue, and neighbor explanations in real time.</p>
             <div class="range-row">
-              <label class="control-label" for="purposeWeight"><span>Business purpose</span><span class="range-value" id="purposeWeightValue">25%</span></label>
-              <input type="range" id="purposeWeight" min="0" max="70" step="1" value="25">
+              <label class="control-label" for="purposeWeight"><span>Business purpose</span><span class="range-value" id="purposeWeightValue">30%</span></label>
+              <input type="range" id="purposeWeight" min="0" max="60" step="1" value="30">
             </div>
             <div class="range-row">
-              <label class="control-label" for="capabilitiesWeight"><span>Capabilities</span><span class="range-value" id="capabilitiesWeightValue">20%</span></label>
-              <input type="range" id="capabilitiesWeight" min="0" max="70" step="1" value="20">
+              <label class="control-label" for="capabilitiesWeight"><span>Capabilities</span><span class="range-value" id="capabilitiesWeightValue">25%</span></label>
+              <input type="range" id="capabilitiesWeight" min="0" max="60" step="1" value="25">
             </div>
             <div class="range-row">
-              <label class="control-label" for="featuresWeight"><span>Features</span><span class="range-value" id="featuresWeightValue">15%</span></label>
-              <input type="range" id="featuresWeight" min="0" max="70" step="1" value="15">
+              <label class="control-label" for="featuresWeight"><span>Features</span><span class="range-value" id="featuresWeightValue">20%</span></label>
+              <input type="range" id="featuresWeight" min="0" max="60" step="1" value="20">
             </div>
             <div class="range-row">
-              <label class="control-label" for="techWeight"><span>Tech stack</span><span class="range-value" id="techWeightValue">30%</span></label>
-              <input type="range" id="techWeight" min="0" max="70" step="1" value="30">
+              <label class="control-label" for="techWeight"><span>Tech stack</span><span class="range-value" id="techWeightValue">15%</span></label>
+              <input type="range" id="techWeight" min="0" max="60" step="1" value="15">
             </div>
             <div class="range-row">
               <label class="control-label" for="dataWeight"><span>Data + security context</span><span class="range-value" id="dataWeightValue">10%</span></label>
-              <input type="range" id="dataWeight" min="0" max="70" step="1" value="10">
+              <input type="range" id="dataWeight" min="0" max="60" step="1" value="10">
             </div>
           </div>
 
           <div class="section">
             <h3>Relationship threshold</h3>
             <div class="range-row">
-              <label class="control-label" for="thresholdSlider"><span>Show edges above</span><span class="range-value" id="thresholdValue">8%</span></label>
-              <input type="range" id="thresholdSlider" min="1" max="50" step="1" value="8">
+              <label class="control-label" for="thresholdSlider"><span>Show edges above</span><span class="range-value" id="thresholdValue">56%</span></label>
+              <input type="range" id="thresholdSlider" min="25" max="95" step="1" value="56">
             </div>
           </div>
 
@@ -118,8 +126,8 @@
           <div>
             <h2 style="margin-bottom:6px;">3D application landscape</h2>
             <div class="help">
-              This map uses dynamically generated real-SAS profiles only. The selected node is rendered larger; click any node to update the details panel.
-              Nearby nodes indicate stronger similarity under the current weighting model.
+              Click any dot to inspect the dimensions behind it. Nearby nodes indicate stronger overall similarity across the current weighting model.
+              In v1, the spatial layout is fixed to a seeded baseline, while edges and explanations update live.
             </div>
           </div>
         </div>
@@ -132,7 +140,7 @@
             <h2>Selected application</h2>
             <span class="small-note">Click on any dot in the landscape.</span>
           </div>
-          <div id="detailsContent" class="placeholder">Pick an application node to inspect its dimensions, closest match, and source-document traceability.</div>
+          <div id="detailsContent" class="placeholder">Pick an application node to inspect its dimensions, closest matches, approval cue, and supporting evidence pages.</div>
         </div>
       </aside>
     </main>
@@ -142,27 +150,27 @@
         <div class="queue-head">
           <div>
             <h2 style="margin:0 0 6px;">Review queue</h2>
-            <div class="queue-note">Applications sorted by closeness to the nearest current application in this real-document set.</div>
+            <div class="queue-note">Pending and in-review applications sorted by closeness to an approved alternative.</div>
           </div>
         </div>
         <div class="queue-table header">
           <div class="queue-cell">Application</div>
           <div class="queue-cell">Status</div>
-          <div class="queue-cell">Closest current application</div>
+          <div class="queue-cell">Closest approved alternative</div>
           <div class="queue-cell">Similarity</div>
-          <div class="queue-cell">Cue</div>
+          <div class="queue-cell">Recommendation</div>
         </div>
         <div id="queueBody" class="queue-table"></div>
       </div>
     </section>
 
     <div class="footer-note">
-      v1.6.1 keeps the v1.3 workshop UI, regenerates data from every real SAS Word document in the folder, and applies the attached v1.3 scatter3d click fix.
+      Two nodes are extracted from the supplied SAS screenshots. The remaining nodes are synthetic workshop seeds to make the clustering and approval demo meaningful.
     </div>
   </div>
 
-  <script src="assets/plotly.min.js?v=1.6.1"></script>
-  <script src="assets/workshop-data.js?v=1.6.1"></script>
-  <script src="assets/workshop.js?v=1.6.1"></script>
+  <script src="assets/plotly.min.js"></script>
+  <script src="assets/workshop-data.js"></script>
+  <script src="assets/workshop.js"></script>
 </body>
 </html>

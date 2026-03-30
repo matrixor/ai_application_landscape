@@ -1,70 +1,44 @@
-# AI Application Landscape Workshop v1.6.1
+# AI Application Landscape Workshop v1
 
-This package is an **offline interactive demo** for Alan’s AI application landscape and approval workbench.
+This package is a **demo workshop** for Alan's AI application landscape and approval workbench. It turns the supplied SAS material into normalized application profiles and shows them in an interactive 3D landscape.
 
-## What changed in v1.6.1
+## What is included
 
-- The workshop data is now generated **dynamically from every real SAS `.docx` file** in `source_materials/real_sas_docs/`.
-- The old hardcoded filename-to-profile map was removed.
-- The extractor now parses section headings, interface tables, model tables, hosting tables, and the security questionnaire directly from each Word document.
-- An optional `config/profile_overrides.json` file is supported for manual cleanup, but it is **not required** for new files to appear in the demo.
-- `scripts/serve_workshop.py` auto-rebuilds the data when files in `real_sas_docs/` change and serves the workshop locally.
-- The front-end stays on the v1.3 workshop interaction model, with the additional scatter3d click fix from the attached v1.3 patch (event rebind + native mouseup fallback).
+- `index.html` — self-contained offline workshop that runs directly in a browser.
+- `data/applications.json` — normalized application profiles used by the workshop.
+- `data/sas_derived_profiles.json` — the two profiles derived from the provided SAS screenshot sets.
+- `docs/demo_script.md` — suggested live demo flow.
+- `docs/mapping_to_sas_template.md` — how the normalized data model maps back to the SAS template.
+- `docs/extracted_profiles.md` — extraction notes for the two SAS-derived applications.
+- `source_materials/` — SAS template, contact sheets, and selected evidence pages used for the extraction.
+- `assets/plotly.min.js` — local Plotly runtime so the workshop can run without internet access.
 
-## Real SAS documents currently included
+## Real vs synthetic data
 
-- **Chubb AI** — Assistants & Document AI
-- **GDP Quantexa** — Fraud & Entity Intelligence
-- **North America MS Dynamics Platform for Claims** — Assistants & Document AI
-- **CVPM APAC (Chubb Virtual Portfolio Manager)** — Pricing & Portfolio Optimization
+This v1 workshop contains:
 
-## How the generated files work
+- **2 SAS-derived applications** from the documents you supplied: Quantexa and CVPM Core APAC.
+- **15 workshop seed applications** that are synthetic and clearly labeled in the UI. They exist only to make the landscape meaningful for a demo; they are not claimed to come from the supplied SAS documents.
 
-- `data/sas_real_profiles.json` — source-of-truth normalized profiles built from the real SAS Word docs.
-- `data/applications.json` — the same normalized profiles, kept for the workshop UI.
-- `assets/workshop-data.js` — browser-ready copy of the same profile data, used by `index.html` when the workshop runs offline.
+Synthetic nodes are included because a 3D similarity landscape with only two applications would not show the clustering, duplicate detection, and approval cues that Alan wants to demonstrate.
 
-These three files are regenerated together by `scripts/extract_real_sas_profiles.py`.
+## How to run
 
-## Dynamic workflow
+Open `index.html` directly in a desktop browser.
 
-### Option A — rebuild on demand
+No server is required.
 
-1. Drop a new real SAS Word document into `source_materials/real_sas_docs/`
-2. Run:
+## What the workshop demonstrates
 
-```bash
-python scripts/extract_real_sas_profiles.py
-```
+- 3D landscape of application similarity
+- Auto-spinning camera for the “3D spinning” experience
+- Click any dot to inspect the **real extracted dimensions** behind the dot
+- Explainable nearest-neighbor view with component-level similarity breakdown
+- Pending review queue showing the closest approved alternative and a recommendation:
+  - Potential duplicate
+  - Likely variant / extension
+  - Novel
 
-3. Refresh the workshop.
+## Important v1 limitation
 
-### Option B — auto-rebuild while serving locally
-
-Run:
-
-```bash
-python scripts/serve_workshop.py
-```
-
-Then open the local URL that the script prints. When you add or replace a SAS file in `real_sas_docs/`, refresh the browser and the server will rebuild the workshop data automatically.
-
-## Optional overrides
-
-If you want to tweak a label without changing the parser, edit:
-
-- `config/profile_overrides.json`
-
-Example uses:
-- rename an app display name
-- force a preferred family
-- enrich `business_unit` or `owner`
-- refine a list such as `capabilities` or `tech_stack`
-
-## Notes
-
-- Direct `index.html` opening still works with the **last generated** data snapshot.
-- Auto-detection of newly dropped SAS files requires running `scripts/serve_workshop.py` or rerunning the extractor script.
-- This build keeps the v1.3 visual workshop structure rather than the later v1.4 node-trace redesign.
-
-- Fixed a regression where the first node click worked but later clicks stopped updating the Selected application panel because Plotly event handlers were being rebound before Plotly.react() fully finished.
+The 3D coordinates are a **seeded baseline layout** that mirrors the intended hybrid similarity neighborhoods. The weight sliders update the relationship edges, queue, and similarity explanations live, but they do not recompute the underlying 3D positions in-browser. A server-backed v2 could recompute the embedding live.

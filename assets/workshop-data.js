@@ -1,550 +1,459 @@
 window.WORKSHOP_APPS = [
   {
-    "id": "chubb-ai",
-    "name": "Chubb AI",
-    "short_name": "Chubb AI",
-    "family": "Assistants & Document AI",
-    "review_status": "Pending Review",
-    "owner": "Chubb EA",
-    "business_unit": "Enterprise AI",
-    "region_scope": [
-      "North America",
-      "COG"
-    ],
-    "business_purpose": "Today, the Chubb business team engages in an extensive process of reviewing numerous documents, checklists, and guidelines to conduct research and analysis for decision-making purposes. The motivation behind Chubb AI is to empower business teams, and executives with efficient document management and knowledge retrieval. Provides centralized access to all Chubb documents (e.g., Underwriting Guidelines, Risk Engineering documents, Legal docs) Enables Q&A functionality directly against these documents for fast, accurate information retrieval Deploys Pathfinder as an app on both Chubb mobile phones and desktops for seamless accessibility Includes document sources from critical business units in ",
-    "capabilities": [
-      "document Q&A",
-      "semantic search",
-      "retrieval / RAG"
-    ],
-    "features": [
-      "question answering",
-      "chat history",
-      "user preferences",
-      "app store catalog",
-      "office plugin access"
-    ],
-    "tech_stack": [
-      "AKS",
-      "Azure Databricks",
-      "ADLS",
-      "Azure Key Vault",
-      "Cosmos DB",
-      "Azure AI Search",
-      "Azure OpenAI",
-      "Azure Blob Storage",
-      "APIM",
-      "AngularJS",
-      "NodeJS",
-      "TypeScript",
-      "Python",
-      "Snowflake"
-    ],
-    "data_domains": [
-      "prompts and threads",
-      "user profile",
-      "business",
-      "address",
-      "email",
-      "documents"
-    ],
-    "data_classification": "Red SPI",
-    "deployment_regions": [
-      "North America",
-      "COG"
-    ],
-    "models": [
-      "GPT-4o Mini",
-      "Azure Document Intelligence"
-    ],
-    "users": [
-      "business teams",
-      "executives"
-    ],
-    "interfaces": [
-      "Mobile App & Chubb AI Service",
-      "WebApp App & Chubb AI Service",
-      "Plugin UI & Chubb AI Service",
-      "Chubb AI Service & AI/RAG Service",
-      "AI/RAG Service to AI Search DB",
-      "AI/RAG Service to Azure OpenAI Service",
-      "Chubb AI Service to Cosmos"
-    ],
-    "nfr": {
-      "rto_hours": 8,
-      "rpo_hours": 8,
-      "availability": "The application must be always available 24*5 apart from agreed scheduled maintenance down-time. During business hours (Mon to Fri 07:00 to 19:00 GES must have 99.99% or higher availability; Sat 07:00"
-    },
-    "priority": 5,
-    "notes": "Auto-generated from the real SAS Word document. Add an override only if you want to adjust display labels or enrich the extracted profile.",
-    "source_sections": {
-      "business_purpose": [
-        "Background",
-        "Business Needs and Benefits",
-        "Objectives and Scope"
-      ],
-      "capabilities": [
-        "Logical Architecture",
-        "System Topology/Context",
-        "Architecture Layers",
-        "ML and Analytics",
-        "ML and Analytics (LLM Models included)"
-      ],
-      "tech_stack": [
-        "Architecture Layers",
-        "Cloud Software",
-        "Security Questionnaire"
-      ],
-      "data_and_security": [
-        "Introduction",
-        "Data Dependencies \u2013 inputs",
-        "Security Questionnaire"
-      ]
-    },
-    "source_type": "Real SAS document",
-    "document": {
-      "filename": "ChubbAI_SAS.docx",
-      "path": "source_materials/real_sas_docs/ChubbAI_SAS.docx",
-      "title": "Solution Architecture Specification Chubb AI",
-      "version": "1.0",
-      "author": "Chubb EA",
-      "issue_date": "10/21/2025",
-      "document_status": "Draft"
-    },
-    "si_number": "4698",
-    "source_excerpt": {
-      "background": "Today, the Chubb business team engages in an extensive process of reviewing numerous documents, checklists, and guidelines to conduct research and analysis for decision-making purposes. The task of searching through unstructured data, such as documents, PDFs, and Excel sheets, entails significant time and effort. Furthermore, it is imperative to ensure compliance during the decision-making process. To address these challenges Pathfinder was build, an advanced tool that leverages GenAI capabilities. The primary objective of Pathfinder is to streamline access to unstructured data, enabling the business team to effortlessly search for information, obtain relevant answers, mitigate errors in decision-making, and enhance overall efficiency. We\u2019re renaming Pathfinder as Chubb AI and enhancing some of the capabilities.",
-      "objectives": "Provides centralized access to all Chubb documents (e.g., Underwriting Guidelines, Risk Engineering documents, Legal docs) Enables Q&A functionality directly against these documents for fast, accurate information retrieval Deploys Pathfinder as an app on both Chubb mobile phones and desktops for seamless accessibility Includes document sources from critical business units in North America (NA), COG, and Legal, with plans to expand to additional sources as capacity allows Scope Build Chubb AI as a comprehensive product for document access and intelligent Q&A Ensure deployment across mobile and desktop platforms for maximum convenience Start with essential business units and continuously expand document coverage to support broader organizational needs",
-      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Application URL: Chubb AI App Store: https://ai-sit.chubb.com/apps/home Chubb AI : https://ai-sit.chubb.com/tabs/home Chubb AI UI Chubb Managed Devices -> Chubb AI Mobile App Browser -> Chubb AI Web App MS Office Plugins -> MS Outlook/word/ppt Business Logic The data pipeline is designed to extract attributes from documents and provide Q&A on the fly using RAG. Chubb GPT provides tailored Q&A on the ad hoc as well Chubb AI data powered by nightly batch ingestion from various sources.Chubb AI data is covered under separate SI 5163. Chu",
-      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d Data Security Controls for GenAI based Applications This section"
-    },
-    "coords": {
-      "embedding3d": {
-        "x": 3.584,
-        "y": 6.799,
-        "z": 1.361
-      },
-      "tech_focus": {
-        "x": 5.921,
-        "y": -7.0,
-        "z": -4.36
-      },
-      "purpose_focus": {
-        "x": 3.54,
-        "y": 6.607,
-        "z": 1.46
-      }
-    }
-  },
-  {
-    "id": "gdp-quantexa",
-    "name": "GDP Quantexa",
-    "short_name": "GDP Quantexa",
+    "id": "quantexa",
+    "name": "Quantexa",
+    "short_name": "Quantexa",
     "family": "Fraud & Entity Intelligence",
-    "review_status": "In Review",
-    "owner": "Chubb EA",
+    "source_type": "SAS-derived",
+    "review_status": "Pending",
+    "owner": "Global Data Platform / Claims Analytics",
     "business_unit": "GDP",
-    "region_scope": [
-      "Global"
-    ],
-    "business_purpose": "Quantexa is a data analytics platform designed to enhance decision-making through advanced contextual decision intelligence. The following are key motivators for the GDP Quantexa platform: Enhanced Data Integration: Organizations often struggle with siloed data across various systems. We are onboarding Quantexa to the platform so that it can be leveraged for Entity Resolution and Network Fraud Detection.",
-    "capabilities": [
-      "entity resolution",
-      "fraud detection",
-      "investigation workflows",
-      "retrieval / RAG"
-    ],
-    "features": [
-      "investigator UI"
-    ],
-    "tech_stack": [
-      "AKS",
-      "Azure Databricks",
-      "ADLS",
-      "Elasticsearch",
-      "PostgreSQL",
-      "Azure Active Directory",
-      "Azure Key Vault",
-      "Azure Blob Storage",
-      "APIM",
-      "Quantexa"
-    ],
-    "data_domains": [
-      "metadata",
-      "business",
-      "address",
-      "documents"
-    ],
-    "data_classification": "N/A (platform scope)",
-    "deployment_regions": [
-      "US East 2 (NA Azure)"
-    ],
-    "models": [
-      "entity resolution",
-      "network fraud model",
-      "knowledge graph"
-    ],
-    "users": [],
-    "interfaces": [
-      "ADLS to Databricks",
-      "Databricks to Elasticsearch",
-      "Quantexa to Elasticsearch",
-      "Quantexa to PostgreSQL"
-    ],
-    "nfr": {
-      "rto_hours": 8,
-      "rpo_hours": 12,
-      "availability": "The application must be available Monday to Saturday during normal business hours (07:00 \u2013 19:00 local time) apart from agreed scheduled maintenance down-time. During business hours (Mon to Fri 07:00 "
-    },
-    "priority": 4,
-    "notes": "Auto-generated from the real SAS Word document. Add an override only if you want to adjust display labels or enrich the extracted profile.",
-    "source_sections": {
-      "business_purpose": [
-        "Background",
-        "Business Needs and Benefits",
-        "Objectives and Scope"
-      ],
-      "capabilities": [
-        "Logical Architecture",
-        "System Topology/Context",
-        "Architecture Layers",
-        "ML and Analytics",
-        "ML and Analytics (LLM Models included)"
-      ],
-      "tech_stack": [
-        "Architecture Layers",
-        "Cloud Software",
-        "Security Questionnaire"
-      ],
-      "data_and_security": [
-        "Introduction",
-        "Data Dependencies \u2013 inputs",
-        "Security Questionnaire"
-      ]
-    },
-    "source_type": "Real SAS document",
-    "document": {
-      "filename": "EA_5145_Solution Architecture Specification Quantexa_Gate3.docx",
-      "path": "source_materials/real_sas_docs/EA_5145_Solution Architecture Specification Quantexa_Gate3.docx",
-      "title": "Solution Architecture Specification GDP Quantexa",
-      "version": "0.1",
-      "author": "Chubb EA",
-      "issue_date": "03/05/2025",
-      "document_status": "Draft"
-    },
+    "region_scope": ["Global"],
     "si_number": "5145",
-    "source_excerpt": {
-      "background": "Quantexa is a data analytics platform designed to enhance decision-making through advanced contextual decision intelligence. It leverages artificial intelligence and machine learning to provide organizations with a comprehensive view of their data, enabling them to uncover hidden insights and relationships within their datasets. By integrating various data sources, Quantexa helps organizations improve risk management, enhance customer insights, and streamline operations. Key features of Quantexa include: Entity Resolution: The platform can identify and link related entities across disparate data sources, ensuring a unified view of information. Network Analytics: Quantexa visualizes complex relationships and networks, allowing users to understand connections and patterns that may not be immediately apparent. Risk Assessment: It provides tools for assessing and mitigating risks, particular",
-      "objectives": "We are onboarding Quantexa to the platform so that it can be leveraged for Entity Resolution and Network Fraud Detection. Entity Resolution will identify unique businesses or individuals by utilizing both internal and external data sources. Network Fraud Detection will leverage a combination of business rules, a network fraud model, a knowledge graph, and specialized fraud-detection tools Scope for this sprint: To obtain Gate 3 approval for provisioning the production platform. Provide an overview description of the purpose/goal of the solution. Where available reference the Business and Solutions Requirement Document and/or the Project Charter document(s). Define the scope of the solution e.g. Europe only, all of COG, Europe initially with later rollout to LATAM and APAC, which Lines of Business (LOBs) etc.This viewpoint provides Senior Management with the business benefits of this solu",
-      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Note that the URL of the application should be highlighted here if known and if the application is a web application Application URL: https://gdp-graph-dev.chubb.com Quantexa UI, ML notebook Business Logic User can decide to ingest scope of the source data and define filter conditions. The scope of the current TSG is for platform deployment. The solutions (with their own TSG) will talk about solution level data flows and will have to abide by Chubb polices of data protection at rest and transit Integration Layer Below are the integrat",
-      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d Appendix Reference Documentation Add references to documents tha"
+    "business_purpose": "Provide entity resolution and network fraud detection on Chubb's Global Data Platform so investigators can unify entities across disparate sources, generate fraud networks, score risks, and investigate suspicious patterns through an interactive UI.",
+    "capabilities": ["entity resolution", "graph analytics", "fraud detection", "dynamic scoring", "investigation workflow", "network generation"],
+    "features": ["batch ingestion", "real-time search", "task loading", "alert generation", "investigator UI", "metadata management"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Elasticsearch", "PostgreSQL", "APIM", "Azure Active Directory", "Azure Key Vault"],
+    "data_domains": ["documents", "individuals", "businesses", "addresses", "emails", "phones"],
+    "data_classification": "TBD / Platform scope",
+    "deployment_regions": ["US East 2", "Central US"],
+    "models": ["network fraud model", "dynamic entity resolution", "dynamic scoring"],
+    "users": ["claims analytics", "fraud investigators"],
+    "interfaces": ["ADLS", "Databricks", "Elasticsearch", "PostgreSQL", "APIM"],
+    "nfr": {"rto_hours": null, "rpo_hours": null, "availability": "Platform service with secondary Azure region"},
+    "priority": 5,
+    "notes": "SAS describes a platform-level approval on Chubb managed Azure with future business-solution-specific TSGs expected later.",
+    "evidence_pages": {
+      "business": ["Quantexa/IMG_1175.jpg", "Quantexa/IMG_1176.jpg"],
+      "application_architecture": ["Quantexa/IMG_1179.jpg", "Quantexa/IMG_1180.jpg", "Quantexa/IMG_1181.jpg"],
+      "data_architecture": ["Quantexa/IMG_1182.jpg"],
+      "infrastructure": ["Quantexa/IMG_1185.jpg", "Quantexa/IMG_1186.jpg", "Quantexa/IMG_1187.jpg"],
+      "security": ["Quantexa/IMG_1191.jpg", "Quantexa/IMG_1192.jpg", "Quantexa/IMG_1193.jpg", "Quantexa/IMG_1194.jpg"]
     },
-    "coords": {
-      "embedding3d": {
-        "x": 2.592,
-        "y": -2.587,
-        "z": -6.855
-      },
-      "tech_focus": {
-        "x": -6.591,
-        "y": -5.204,
-        "z": 5.02
-      },
-      "purpose_focus": {
-        "x": 2.487,
-        "y": -2.606,
-        "z": -6.747
-      }
-    }
+    "coords": {"embedding3d": {"x": -11.5, "y": 2.8, "z": 1.7}, "tech_focus": {"x": -10.8, "y": 3.1, "z": 1.2}, "purpose_focus": {"x": -12.0, "y": 2.3, "z": 2.0}}
   },
   {
-    "id": "north-america-ms-dynamics-platform-for-claims",
-    "name": "North America MS Dynamics Platform for Claims",
-    "short_name": "North America MS Dynamics Plat",
-    "family": "Assistants & Document AI",
-    "review_status": "Pending Review",
-    "owner": "Chubb EA",
-    "business_unit": "North America MS Dynamics Platform for Claims",
-    "region_scope": [
-      "APAC",
-      "North America",
-      "COG",
-      "LATAM"
-    ],
-    "business_purpose": "The business problem revolves around the significant amount of time adjusters spend accumulating information from various fragmented sources to adjudicate claims. The Claims Adjuster Desktop is a platform that will streamline the certain claims function for adjudication claims in ClaimVision & ClaimConnect claims through a new UI that interfaces with these existing core systems. We are planning to migrate the application from the existing MS Dynamics instance to a new instance in",
-    "capabilities": [
-      "document Q&A",
-      "dashboarding",
-      "retrieval / RAG",
-      "summarization"
-    ],
-    "features": [
-      "task creation",
-      "alert thresholds",
-      "embedded Power BI dashboards"
-    ],
-    "tech_stack": [
-      "AKS",
-      "Azure Active Directory",
-      "Azure Key Vault",
-      "APIM",
-      "Redis",
-      "AngularJS",
-      "Power BI",
-      "Confluent Kafka",
-      "OAuth"
-    ],
-    "data_domains": [
-      "metadata",
-      "business",
-      "address",
-      "documents",
-      "alerts",
-      "tasks",
-      "policy",
-      "claims"
-    ],
-    "data_classification": "Yellow",
-    "deployment_regions": [
-      "APAC",
-      "North America",
-      "COG",
-      "LATAM"
-    ],
-    "models": [],
-    "users": [],
-    "interfaces": [
-      "Dynamics 365 \u2013 UI Transformation Layer (API)",
-      "ADT UI Transformation Layer \u2013 ADT Orchestration Layer",
-      "ADT Orchestration Layer - DCP",
-      "Orchestration Layer \u2013 Core Claim Systems",
-      "ADT IFRAME Apps \u2013 Claim Analytics APIs",
-      "Claims Analytics APIs",
-      "Claim Systems DB \u2013 Mass Ingestion \u2013 ADT Change Log DB",
-      "Claims Management Systems \u2013 Mass Ingestion \u2013 ADT Change Log DB",
-      "Claim Systems \u2013 Kafka",
-      "Claims Management Systems \u2013 Kafka",
-      "Change Log Access API \u2013 Change Log DB",
-      "Change Log Access API to DB"
-    ],
-    "nfr": {
-      "rto_hours": 8,
-      "rpo_hours": 8,
-      "availability": "The Adjuster desktop is dependent on the following applications and platforms ClaimVision: 24 x7 except for Friday 10 PM to Saturday 8 AM, down for maintenance ClaimConnect: 24 x7 except during monthl"
-    },
+    "id": "claims_fraud_link_analytics",
+    "name": "Claims Fraud Link Analytics",
+    "short_name": "Claims Fraud Link",
+    "family": "Fraud & Entity Intelligence",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Claims Special Investigation Unit",
+    "business_unit": "Claims",
+    "region_scope": ["North America"],
+    "si_number": "WS-001",
+    "business_purpose": "Link claimants, providers, vehicles, addresses, and payments to surface suspicious claims networks and route suspicious clusters to investigators.",
+    "capabilities": ["entity resolution", "graph analytics", "fraud detection", "dynamic scoring", "investigation workflow"],
+    "features": ["case queues", "network visualization", "alert generation", "investigator UI", "payment linkage", "batch ingestion"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Elasticsearch", "PostgreSQL", "Azure Active Directory"],
+    "data_domains": ["claims", "payments", "policy", "providers", "addresses", "vehicles"],
+    "data_classification": "Red SBI",
+    "deployment_regions": ["US East 2"],
+    "models": ["claims fraud network model", "anomaly scoring"],
+    "users": ["claims investigators", "fraud analysts"],
+    "interfaces": ["claims lake", "payments hub", "policy service"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "Business hours + batch window"},
     "priority": 4,
-    "notes": "Auto-generated from the real SAS Word document. Add an override only if you want to adjust display labels or enrich the extracted profile.",
-    "source_sections": {
-      "business_purpose": [
-        "Background",
-        "Business Needs and Benefits",
-        "Objectives and Scope"
-      ],
-      "capabilities": [
-        "Logical Architecture",
-        "System Topology/Context",
-        "Architecture Layers",
-        "ML and Analytics (LLM Models included)"
-      ],
-      "tech_stack": [
-        "Architecture Layers",
-        "Cloud Software",
-        "Security Questionnaire"
-      ],
-      "data_and_security": [
-        "Introduction",
-        "Data Dependencies \u2013 inputs",
-        "Security Questionnaire"
-      ]
-    },
-    "source_type": "Real SAS document",
-    "document": {
-      "filename": "SI 5877 SAS - Claims Instance of MS Dynamic Platform 0v4.docx",
-      "path": "source_materials/real_sas_docs/SI 5877 SAS - Claims Instance of MS Dynamic Platform 0v4.docx",
-      "title": "Solution Architecture Specification North America MS Dynamics Platform for Claims",
-      "version": "0.4",
-      "author": "Chubb EA",
-      "issue_date": "12/Mar/2026",
-      "document_status": "Draft"
-    },
-    "si_number": "5877",
-    "source_excerpt": {
-      "background": "The business problem revolves around the significant amount of time adjusters spend accumulating information from various fragmented sources to adjudicate claims. The existing claims application ecosystem is highly complex and isolated, with most applications dedicated to specific lines of business, leading to inefficiencies and redundancy. Only a small fraction of applications is shared among multiple lines of business, and many of the systems are deemed complex or highly complex, further complicating the adjusters' workload. This setup results in operational inefficiencies, insufficient prioritization of adjuster tasks, and a disjointed client experience, prompting the need for a streamlined, integrated solution to handle the claim management process efficiently. The Adjuster Desktop solution will be migrated from a shared Microsoft Dynamics environment to a dedicated instance, ensurin",
-      "objectives": "We are planning to migrate the application from the existing MS Dynamics instance to a new instance in 2026. The main reasons for that are the following: Faster speed to market: dedicated team focused on Claims capabilities and aligned with Claims release calendar Greater flexibility: Ability to adopt and customize MS Dynamics features rapidly to enable improved user experience Easier customization: Ability to adopt custom plugins from MS Dynamics and integrations without impact analysis of other geographies and modules not used by Claims Provide an overview description of the purpose/goal of the solution. Where available reference the Business and Solutions Requirement Document and/or the Project Charter document(s). Define the scope of the solution e.g. Europe only, all of COG, Europe initially with later rollout to LATAM and APAC, which Lines of Business (LOBs) etc.This viewpoint prov",
-      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Note that the URL of the application should be highlighted here if known and if the application is a web application Application URL: Dynamics 365 SaaS URL MS Dynamics 365 will be the presentation layer Business Logic Business logic primarily resides in the existing Claim Management systems. However, there are two UI data processing layers in the newly built system that will fetch the data from core claim system or update the data in the core claim management systems. Layer 1 \u2013 Orchestration layer that will integrate with one or more ",
-      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d"
-    },
-    "coords": {
-      "embedding3d": {
-        "x": -7.0,
-        "y": 0.795,
-        "z": 0.218
-      },
-      "tech_focus": {
-        "x": 4.343,
-        "y": 6.22,
-        "z": 4.789
-      },
-      "purpose_focus": {
-        "x": -7.0,
-        "y": 0.959,
-        "z": 0.05
-      }
-    }
+    "notes": "Acts as an approved baseline for fraud graph use cases.",
+    "coords": {"embedding3d": {"x": -9.6, "y": 4.0, "z": 0.8}, "tech_focus": {"x": -9.8, "y": 3.8, "z": 0.5}, "purpose_focus": {"x": -9.1, "y": 4.3, "z": 1.1}}
   },
   {
-    "id": "cvpm-apac-chubb-virtual-portfolio-manager",
-    "name": "CVPM APAC (Chubb Virtual Portfolio Manager)",
+    "id": "aml_entity_resolution_hub",
+    "name": "AML Entity Resolution Hub",
+    "short_name": "AML Entity Hub",
+    "family": "Fraud & Entity Intelligence",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Financial Crime Technology",
+    "business_unit": "Compliance",
+    "region_scope": ["EMEA"],
+    "si_number": "WS-002",
+    "business_purpose": "Resolve legal entities, beneficial owners, and counterparties across sanctions and onboarding data to accelerate AML review and suspicious-activity investigations.",
+    "capabilities": ["entity resolution", "graph analytics", "sanctions screening", "case management", "investigation workflow"],
+    "features": ["network search", "entity mastering", "alert triage", "investigator UI", "batch ingestion"],
+    "tech_stack": ["AKS", "ADLS", "Elasticsearch", "PostgreSQL", "APIM", "Azure Key Vault", "Azure Active Directory"],
+    "data_domains": ["customers", "counterparties", "beneficial owners", "screening alerts", "documents"],
+    "data_classification": "Yellow PI",
+    "deployment_regions": ["West Europe"],
+    "models": ["entity match model", "sanctions risk score"],
+    "users": ["aml analysts", "investigators"],
+    "interfaces": ["screening service", "customer master", "case platform"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "24x6"},
+    "priority": 3,
+    "notes": "Different regulatory driver but highly similar graph/entity pattern.",
+    "coords": {"embedding3d": {"x": -12.7, "y": 0.7, "z": -0.2}, "tech_focus": {"x": -12.4, "y": 0.9, "z": -0.5}, "purpose_focus": {"x": -13.0, "y": 0.3, "z": 0.1}}
+  },
+  {
+    "id": "broker_network_risk_graph",
+    "name": "Broker Network Risk Graph",
+    "short_name": "Broker Risk Graph",
+    "family": "Fraud & Entity Intelligence",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Pending",
+    "owner": "Distribution Analytics",
+    "business_unit": "Broker Management",
+    "region_scope": ["APAC"],
+    "si_number": "WS-003",
+    "business_purpose": "Map broker, producer, account, and referral relationships to detect concentration, collusion, and abnormal referral patterns in broker-led submissions.",
+    "capabilities": ["graph analytics", "relationship scoring", "anomaly detection", "dynamic scoring"],
+    "features": ["network visualization", "threshold alerts", "watch lists", "dashboard views", "search"],
+    "tech_stack": ["AKS", "ADLS", "Neo4j", "Power BI", "Azure Active Directory", "APIM"],
+    "data_domains": ["brokers", "submissions", "accounts", "commissions", "referrals"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["Southeast Asia"],
+    "models": ["relationship risk score", "abnormal referral model"],
+    "users": ["distribution analysts", "compliance analysts"],
+    "interfaces": ["submission service", "broker master", "commission feeds"],
+    "nfr": {"rto_hours": 48, "rpo_hours": 12, "availability": "Business hours"},
+    "priority": 3,
+    "notes": "Could leverage a common relationship intelligence platform rather than a net-new stack.",
+    "coords": {"embedding3d": {"x": -8.5, "y": 1.0, "z": -2.1}, "tech_focus": {"x": -8.1, "y": 1.4, "z": -1.5}, "purpose_focus": {"x": -8.8, "y": 0.4, "z": -2.5}}
+  },
+  {
+    "id": "sanctions_relationship_investigator",
+    "name": "Sanctions Relationship Investigator",
+    "short_name": "Sanctions Investigator",
+    "family": "Fraud & Entity Intelligence",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "In Review",
+    "owner": "Sanctions Operations",
+    "business_unit": "Compliance",
+    "region_scope": ["Global"],
+    "si_number": "WS-004",
+    "business_purpose": "Investigate sanctions alerts by exploring relationship paths across parties, ownership structures, and external watchlist hits.",
+    "capabilities": ["graph analytics", "relationship search", "case management", "sanctions screening"],
+    "features": ["entity graph", "alert workbench", "path explorer", "investigator notes"],
+    "tech_stack": ["AKS", "Elasticsearch", "PostgreSQL", "APIM", "Azure Active Directory", "Azure Key Vault"],
+    "data_domains": ["watchlists", "counterparties", "ownership", "alerts", "documents"],
+    "data_classification": "Yellow PI",
+    "deployment_regions": ["US East 2", "West Europe"],
+    "models": ["alert prioritization"],
+    "users": ["sanctions investigators"],
+    "interfaces": ["screening service", "case manager"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "24x7"},
+    "priority": 2,
+    "notes": "Similar relationship-graph pattern with narrower sanctions scope.",
+    "coords": {"embedding3d": {"x": -13.5, "y": -1.4, "z": -1.6}, "tech_focus": {"x": -13.1, "y": -1.0, "z": -1.2}, "purpose_focus": {"x": -14.0, "y": -1.7, "z": -1.9}}
+  },
+  {
+    "id": "payments_fraud_network_monitor",
+    "name": "Payments Fraud Network Monitor",
+    "short_name": "Payments Fraud Monitor",
+    "family": "Fraud & Entity Intelligence",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Payments Analytics",
+    "business_unit": "Treasury",
+    "region_scope": ["Global"],
+    "si_number": "WS-005",
+    "business_purpose": "Score suspicious payment rings and mule networks in near real time by linking accounts, cards, devices, and transfer behavior.",
+    "capabilities": ["graph analytics", "fraud detection", "stream scoring", "anomaly detection"],
+    "features": ["stream alerts", "graph drill-down", "investigator UI", "payment linkage", "case queues"],
+    "tech_stack": ["AKS", "Kafka", "Elasticsearch", "PostgreSQL", "ADLS", "Azure Active Directory"],
+    "data_domains": ["payments", "accounts", "devices", "cards", "transfers"],
+    "data_classification": "Red SBI",
+    "deployment_regions": ["US East 2", "UK South"],
+    "models": ["stream fraud score", "network risk model"],
+    "users": ["payments investigators"],
+    "interfaces": ["payment gateway", "case platform", "customer master"],
+    "nfr": {"rto_hours": 8, "rpo_hours": 1, "availability": "24x7"},
+    "priority": 4,
+    "notes": "Approved real-time graph platform showing reuse opportunity for Quantexa-style needs.",
+    "coords": {"embedding3d": {"x": -10.2, "y": -2.8, "z": 0.3}, "tech_focus": {"x": -9.7, "y": -2.4, "z": 0.6}, "purpose_focus": {"x": -10.7, "y": -3.1, "z": 0.0}}
+  },
+  {
+    "id": "cvpm_core_apac",
+    "name": "CVPM Core APAC",
     "short_name": "CVPM APAC",
     "family": "Pricing & Portfolio Optimization",
-    "review_status": "Pending Review",
-    "owner": "Chubb EA",
-    "business_unit": "APAC",
-    "region_scope": [
-      "APAC"
-    ],
-    "business_purpose": "Portfolio+ is a strategic initiative aimed at revolutionizing the Flow business by delivering real-time monitoring and comprehensive insights, enabling a more streamlined price decision-making process and faster time-to-market, all aimed at achieving profitable portfolio growth. Chubb has a diverse global portfolio of flow businesses operating at high volumes in dynamic, highly competitive marketplaces, requiring advanced portfolio management to increase the profitability of Chubb products: Improved Decision-Making: Centralized data and real-time analytics support more accurate and timely pricing strategies.",
-    "capabilities": [
-      "portfolio monitoring",
-      "price optimization",
-      "simulation",
-      "scenario testing",
-      "anomaly detection",
-      "decision support",
-      "dashboarding",
-      "model monitoring",
-      "retrieval / RAG"
-    ],
-    "features": [
-      "alert thresholds",
-      "monitoring pipeline",
-      "configuration upload",
-      "simulation library",
-      "embedded Power BI dashboards",
-      "model monitoring",
-      "report generation"
-    ],
-    "tech_stack": [
-      "AKS",
-      "Azure Databricks",
-      "ADLS",
-      "Azure Active Directory",
-      "Azure Key Vault",
-      "Cosmos DB",
-      "APIM",
-      "Power BI",
-      "Confluent Kafka",
-      "Snowflake",
-      "OAuth"
-    ],
-    "data_domains": [
-      "metadata",
-      "business",
-      "documents",
-      "policy",
-      "claims",
-      "reference data",
-      "pricing",
-      "submissions",
-      "technical premium",
-      "loss cost"
-    ],
+    "source_type": "SAS-derived",
+    "review_status": "Pending",
+    "owner": "APAC Portfolio Analytics",
+    "business_unit": "APAC BizPack / Flow",
+    "region_scope": ["APAC"],
+    "si_number": "6502",
+    "business_purpose": "Provide flow business monitoring and portfolio management for APAC BizPack by combining discovery analytics, conversion and smoothing models, simulation tools, dashboards, and decision support for pricing actions.",
+    "capabilities": ["portfolio monitoring", "conversion modeling", "price optimization", "anomaly detection", "simulation", "decision support"],
+    "features": ["real-time dashboards", "alerts", "scenario testing", "smoothing controls", "simulator UI", "Power BI views"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Cosmos DB", "Confluent Kafka", "Power BI", "Azure Active Directory", "APIM"],
+    "data_domains": ["policy", "claims", "pricing", "submissions", "reference data", "portfolios"],
     "data_classification": "Red SBI",
-    "deployment_regions": [
-      "Southeast Asia (APAC Azure)"
-    ],
-    "models": [
-      "L0 Model",
-      "Discovery/Monitoring Model",
-      "Smoothing Model",
-      "Simulator Model",
-      "L0 conversion model",
-      "discovery/monitoring model",
-      "smoothing model",
-      "simulator decision engine"
-    ],
-    "users": [
-      "staff with Chubb LANIDs",
-      "analytics team",
-      "underwriting operations",
-      "IT operations"
-    ],
-    "interfaces": [
-      "L0 Conversion Model Output and Monitoring data to CVPM",
-      "L0 Model output, Monitoring data to CVPM",
-      "Monitoring Process",
-      "Monitoring Execution (Model Execution and write the output to monitoring container)",
-      "CVPM Middleware",
-      "Middleware Orchestrator to Integrate UI, mode execution and data",
-      "Decision Engine Model",
-      "Decision Engine Model Execution (Smoothing, Simulator)",
-      "UI",
-      "Portfolio UI"
-    ],
-    "nfr": {
-      "rto_hours": 48,
-      "rpo_hours": 12,
-      "availability": "The application must be available Monday to Saturday during normal business hours (07:00 \u2013 19:00 local time) apart from agreed scheduled maintenance down-time. During business hours (Mon to Fri 07:00 "
-    },
+    "deployment_regions": ["Southeast Asia", "East Asia"],
+    "models": ["L0 conversion model", "monitoring/discovery model", "smoothing model", "simulator / decision engine"],
+    "users": ["portfolio managers", "pricing analysts", "product owners"],
+    "interfaces": ["source systems", "reference data", "Power BI", "Confluent Kafka", "ADLS"],
+    "nfr": {"rto_hours": 48, "rpo_hours": 12, "availability": "Business hours with passive failover region"},
     "priority": 5,
-    "notes": "Auto-generated from the real SAS Word document. Add an override only if you want to adjust display labels or enrich the extracted profile.",
-    "source_sections": {
-      "business_purpose": [
-        "Background",
-        "Business Needs and Benefits",
-        "Objectives and Scope"
-      ],
-      "capabilities": [
-        "Logical Architecture",
-        "System Topology/Context",
-        "Architecture Layers",
-        "ML and Analytics",
-        "ML and Analytics (LLM Models included)"
-      ],
-      "tech_stack": [
-        "Architecture Layers",
-        "Cloud Software",
-        "Security Questionnaire"
-      ],
-      "data_and_security": [
-        "Introduction",
-        "Data Dependencies \u2013 inputs",
-        "Security Questionnaire"
-      ]
+    "notes": "SAS shows AKS-based portfolio optimization solution with Red SBI data and model-driven pricing workflows.",
+    "evidence_pages": {
+      "business": ["CVPM Core APAC/IMG_1291.jpg", "CVPM Core APAC/IMG_1293.jpg"],
+      "application_architecture": ["CVPM Core APAC/IMG_1295.jpg", "CVPM Core APAC/IMG_1296.jpg", "CVPM Core APAC/IMG_1301.jpg"],
+      "data_architecture": ["CVPM Core APAC/IMG_1303.jpg", "CVPM Core APAC/IMG_1304.jpg", "CVPM Core APAC/IMG_1305.jpg"],
+      "infrastructure": ["CVPM Core APAC/IMG_1306.jpg", "CVPM Core APAC/IMG_1307.jpg", "CVPM Core APAC/IMG_1308.jpg", "CVPM Core APAC/IMG_1309.jpg"],
+      "security": ["CVPM Core APAC/IMG_1310.jpg", "CVPM Core APAC/IMG_1311.jpg", "CVPM Core APAC/IMG_1312.jpg"]
     },
-    "source_type": "Real SAS document",
-    "document": {
-      "filename": "Solution Architecture Specification CVPM_APAC.docx",
-      "path": "source_materials/real_sas_docs/Solution Architecture Specification CVPM_APAC.docx",
-      "title": "Solution Architecture Specification CVPM APAC(Chubb Virtual Portfolio Manager)",
-      "version": "1.0",
-      "author": "Chubb EA",
-      "issue_date": "08/21/2025",
-      "document_status": "Draft"
-    },
-    "si_number": "5549",
-    "source_excerpt": {
-      "background": "Portfolio+ is a strategic initiative aimed at revolutionizing the Flow business by delivering real-time monitoring and comprehensive insights, enabling a more streamlined price decision-making process and faster time-to-market, all aimed at achieving profitable portfolio growth. The aim of the portfolio optimization project is to dynamically adjust policy terms and pricing while maintaining portfolio risk and growth targets. Traditionally Chubb has achieved these goals with manual intervention and the imposition of rules to govern risk. This SI is covering all the work required to build and deploy Portfolio models and UI in APAC for BizPack",
-      "objectives": "The objective of Portfolio+ is to empower the Flow business with advanced capabilities for real-time monitoring and consolidated insights, enabling more streamlined and effective pricing decisions. The project aims to accelerate time-to-market and support profitable portfolio growth by providing a unified platform for data-driven decision-making. 1. Real-time Monitoring and Actionable Insights: Quickly identify and respond to emerging trends with automated monitoring, advanced diagnostics, and proprietary algorithms\u2014driving both profitability and business growth. 2. Streamlined Decision Making with Scenario Testing: Improve portfolio management through automated alerts, dynamic model updates, and scenario testing powered by proprietary optimization algorithms. This enables rapid, data-driven pricing and underwriting decisions. 3. Dynamic Pricing with Market and Risk Awareness: Adapt pric",
-      "architecture_layers": "Provide an architecture diagram detailing the key components of the solution, and provide associated description of the application architecture. This section should detail the protocols between different solution components. The solution is divided into the following layers: Presentation Layer Business Logic Integration Layer Persistence Presentation Layer Application URL: CVPM UI UI Component: Provides interface for system interaction, configuration management, and config file uploads. Restricted role to have upload access and Upload feature will enable only for those users. Since it\u2019s via Chubb network there is no further scanning required. Dashboard: Displays processed data, Current Summary reports, Simulation Summary results, and interactive analytics visualizations For Upload configuration we would be constraining restricted role to have upload access and upload button will only be",
-      "security": "The blue text in the Comments/Details is for instruction purposes only, please replace it with the solution details. Where an answer/s apply to different areas of the solution please make it clear in the comments, also list any applicable Security Issue Numbers (IPT0000XXXXX) in the comment\u2019s column. Where applicable please provide as much detail as possible, for example the below does not inform as to the algorithms in place or exactly where that encryption applies. \u201cData is encrypted at rest.\u201d An improvement on the above example, at the time of writing, might be: \u201cCustomer data held within the Chubb managed SQL database is encrypted at both the volume/disk level using AES-256 and database file level using TDE (also AES-256) which aligns with the Security Policies in relation to the data classification of Yellow Business.\u201d Appendix Reference Documentation Add references to documents tha"
-    },
-    "coords": {
-      "embedding3d": {
-        "x": 0.824,
-        "y": -5.007,
-        "z": 5.276
-      },
-      "tech_focus": {
-        "x": -3.673,
-        "y": 5.984,
-        "z": -5.449
-      },
-      "purpose_focus": {
-        "x": 0.973,
-        "y": -4.96,
-        "z": 5.237
-      }
-    }
+    "coords": {"embedding3d": {"x": 8.4, "y": 3.6, "z": 1.2}, "tech_focus": {"x": 8.8, "y": 3.2, "z": 1.0}, "purpose_focus": {"x": 8.0, "y": 4.1, "z": 1.5}}
+  },
+  {
+    "id": "portfolio_pricing_emea",
+    "name": "Portfolio Pricing EMEA",
+    "short_name": "Portfolio Pricing EMEA",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "EMEA Pricing Analytics",
+    "business_unit": "EMEA Commercial",
+    "region_scope": ["EMEA"],
+    "si_number": "WS-006",
+    "business_purpose": "Optimize portfolio pricing and conversion in EMEA flow business through conversion models, smoothing controls, simulation, and portfolio monitoring dashboards.",
+    "capabilities": ["portfolio monitoring", "conversion modeling", "price optimization", "simulation", "decision support"],
+    "features": ["real-time dashboards", "alerts", "scenario testing", "simulator UI", "Power BI views"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Cosmos DB", "Confluent Kafka", "Power BI", "Azure Active Directory", "APIM"],
+    "data_domains": ["policy", "claims", "pricing", "submissions", "reference data", "portfolios"],
+    "data_classification": "Red SBI",
+    "deployment_regions": ["UK South"],
+    "models": ["conversion model", "smoothing model", "decision engine"],
+    "users": ["pricing analysts", "portfolio managers"],
+    "interfaces": ["pricing lake", "Power BI", "submission feeds"],
+    "nfr": {"rto_hours": 48, "rpo_hours": 12, "availability": "Business hours"},
+    "priority": 4,
+    "notes": "Approved benchmark very close to the CVPM architecture pattern.",
+    "coords": {"embedding3d": {"x": 9.6, "y": 5.0, "z": 1.4}, "tech_focus": {"x": 10.0, "y": 4.8, "z": 1.2}, "purpose_focus": {"x": 9.1, "y": 5.4, "z": 1.8}}
+  },
+  {
+    "id": "portfolio_pricing_latam",
+    "name": "Portfolio Pricing LATAM",
+    "short_name": "Portfolio Pricing LATAM",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Pending",
+    "owner": "LATAM Pricing Office",
+    "business_unit": "LATAM Commercial",
+    "region_scope": ["LATAM"],
+    "si_number": "WS-007",
+    "business_purpose": "Replicate the portfolio pricing and simulation pattern for LATAM flow business with regional data feeds and localized dashboards.",
+    "capabilities": ["portfolio monitoring", "conversion modeling", "price optimization", "simulation", "decision support"],
+    "features": ["dashboard views", "alerts", "scenario testing", "pricing controls", "simulator UI"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Cosmos DB", "Confluent Kafka", "Power BI", "Azure Active Directory"],
+    "data_domains": ["policy", "claims", "pricing", "submissions", "reference data"],
+    "data_classification": "Red SBI",
+    "deployment_regions": ["Brazil South"],
+    "models": ["conversion model", "smoothing model", "simulation engine"],
+    "users": ["pricing analysts", "portfolio managers"],
+    "interfaces": ["pricing feeds", "dashboard layer"],
+    "nfr": {"rto_hours": 48, "rpo_hours": 12, "availability": "Business hours"},
+    "priority": 4,
+    "notes": "Pending regional variant that may reuse the same productized stack as APAC/EMEA.",
+    "coords": {"embedding3d": {"x": 7.2, "y": 4.8, "z": 2.4}, "tech_focus": {"x": 7.7, "y": 4.5, "z": 2.0}, "purpose_focus": {"x": 6.6, "y": 5.2, "z": 2.9}}
+  },
+  {
+    "id": "renewal_retention_optimizer",
+    "name": "Renewal Retention Optimizer",
+    "short_name": "Retention Optimizer",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Renewal Analytics",
+    "business_unit": "Commercial Lines",
+    "region_scope": ["North America"],
+    "si_number": "WS-008",
+    "business_purpose": "Improve renewal retention and margin by simulating price moves, monitoring book health, and recommending pricing actions at segment level.",
+    "capabilities": ["retention modeling", "price optimization", "simulation", "portfolio monitoring"],
+    "features": ["pricing scenarios", "margin dashboards", "segment views", "alerts", "what-if analysis"],
+    "tech_stack": ["Azure Databricks", "ADLS", "Power BI", "Cosmos DB", "AKS", "Azure Active Directory"],
+    "data_domains": ["renewals", "pricing", "policy", "segment performance"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US Central"],
+    "models": ["retention model", "price elasticity model", "scenario engine"],
+    "users": ["renewal managers", "pricing analysts"],
+    "interfaces": ["renewal feeds", "portfolio mart"],
+    "nfr": {"rto_hours": 72, "rpo_hours": 24, "availability": "Business hours"},
+    "priority": 3,
+    "notes": "Less real-time, but same optimization/simulation family.",
+    "coords": {"embedding3d": {"x": 10.8, "y": 1.4, "z": 0.0}, "tech_focus": {"x": 11.1, "y": 1.1, "z": -0.2}, "purpose_focus": {"x": 10.5, "y": 1.8, "z": 0.4}}
+  },
+  {
+    "id": "submission_conversion_monitor",
+    "name": "Submission Conversion Monitor",
+    "short_name": "Submission Monitor",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Submission Analytics",
+    "business_unit": "Underwriting Operations",
+    "region_scope": ["Global"],
+    "si_number": "WS-009",
+    "business_purpose": "Track submission conversion, mix, and referral patterns with anomaly detection and scorecards to guide underwriting and pricing action.",
+    "capabilities": ["portfolio monitoring", "conversion modeling", "anomaly detection", "decision support"],
+    "features": ["dashboards", "alerts", "scorecards", "trend views", "drill-downs"],
+    "tech_stack": ["Azure Databricks", "ADLS", "Power BI", "AKS", "Azure Active Directory", "APIM"],
+    "data_domains": ["submissions", "conversion", "underwriting metrics", "product mix"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US East 2", "UK South"],
+    "models": ["conversion model", "monitoring anomaly score"],
+    "users": ["underwriting managers", "portfolio analysts"],
+    "interfaces": ["submission warehouse", "dashboard layer"],
+    "nfr": {"rto_hours": 48, "rpo_hours": 12, "availability": "Business hours"},
+    "priority": 3,
+    "notes": "Approved monitoring-only subset of the broader CVPM pattern.",
+    "coords": {"embedding3d": {"x": 6.0, "y": 2.2, "z": -1.0}, "tech_focus": {"x": 6.5, "y": 2.0, "z": -1.3}, "purpose_focus": {"x": 5.4, "y": 2.5, "z": -0.7}}
+  },
+  {
+    "id": "simulation_library_for_pricing",
+    "name": "Simulation Library for Pricing",
+    "short_name": "Pricing Sim Library",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Pending",
+    "owner": "Pricing Platform Team",
+    "business_unit": "Shared Pricing Services",
+    "region_scope": ["Global"],
+    "si_number": "WS-010",
+    "business_purpose": "Expose reusable simulation services, model catalogs, and optimization components for regional pricing teams rather than standing up separate end-to-end applications.",
+    "capabilities": ["simulation", "optimization services", "model catalog", "decision support"],
+    "features": ["simulation APIs", "model registry", "scenario templates", "configuration UI"],
+    "tech_stack": ["AKS", "Azure Databricks", "ADLS", "Cosmos DB", "APIM", "Azure Active Directory"],
+    "data_domains": ["pricing scenarios", "model metadata", "simulation outputs"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US East 2"],
+    "models": ["optimization engine", "scenario library"],
+    "users": ["pricing platform engineers", "regional pricing teams"],
+    "interfaces": ["APIM", "regional CVPM apps"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "Business hours"},
+    "priority": 4,
+    "notes": "Useful architectural alternative if multiple regional CVPM clones emerge.",
+    "coords": {"embedding3d": {"x": 11.5, "y": 3.0, "z": -1.7}, "tech_focus": {"x": 12.0, "y": 2.6, "z": -1.9}, "purpose_focus": {"x": 11.0, "y": 3.4, "z": -1.4}}
+  },
+  {
+    "id": "portfolio_discovery_na",
+    "name": "Portfolio Discovery North America",
+    "short_name": "Portfolio Discovery NA",
+    "family": "Pricing & Portfolio Optimization",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Portfolio Insights",
+    "business_unit": "North America Commercial",
+    "region_scope": ["North America"],
+    "si_number": "WS-011",
+    "business_purpose": "Discover portfolio outliers, segment movement, and underperforming cells using monitoring models and dashboard exploration.",
+    "capabilities": ["portfolio monitoring", "anomaly detection", "discovery analytics"],
+    "features": ["dashboards", "outlier alerts", "trend explorer", "segment drill-down"],
+    "tech_stack": ["Azure Databricks", "ADLS", "Power BI", "AKS", "Azure Active Directory"],
+    "data_domains": ["policy", "claims", "pricing", "segments"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US East 2"],
+    "models": ["discovery model", "anomaly score"],
+    "users": ["portfolio analysts"],
+    "interfaces": ["portfolio mart"],
+    "nfr": {"rto_hours": 72, "rpo_hours": 24, "availability": "Business hours"},
+    "priority": 2,
+    "notes": "Monitoring-heavy cousin of CVPM with lower decision automation.",
+    "coords": {"embedding3d": {"x": 5.6, "y": 0.3, "z": 1.2}, "tech_focus": {"x": 6.0, "y": 0.1, "z": 0.8}, "purpose_focus": {"x": 5.1, "y": 0.7, "z": 1.6}}
+  },
+  {
+    "id": "underwriting_copilot",
+    "name": "Underwriting Copilot",
+    "short_name": "UW Copilot",
+    "family": "Assistants & Document AI",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Underwriting Technology",
+    "business_unit": "Underwriting",
+    "region_scope": ["Global"],
+    "si_number": "WS-012",
+    "business_purpose": "Help underwriters summarize account packs, answer questions over submission documents, and draft broker communications with retrieval-augmented generation.",
+    "capabilities": ["generative ai", "summarization", "semantic search", "draft generation", "rag"],
+    "features": ["chat UI", "document grounding", "prompt templates", "draft email", "reference links"],
+    "tech_stack": ["Azure OpenAI", "Azure AI Search", "Blob Storage", "AKS", "APIM", "Azure Active Directory"],
+    "data_domains": ["submission documents", "broker emails", "policy documents"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US East 2", "West Europe"],
+    "models": ["gpt family llm", "embedding model"],
+    "users": ["underwriters", "assistants"],
+    "interfaces": ["document store", "email service", "policy API"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "Business hours"},
+    "priority": 3,
+    "notes": "Clear contrast cluster versus graph and pricing applications.",
+    "coords": {"embedding3d": {"x": 0.0, "y": -9.0, "z": 3.0}, "tech_focus": {"x": 0.7, "y": -8.7, "z": 3.4}, "purpose_focus": {"x": -0.5, "y": -9.3, "z": 2.7}}
+  },
+  {
+    "id": "claims_summary_assistant",
+    "name": "Claims Summary Assistant",
+    "short_name": "Claims Summarizer",
+    "family": "Assistants & Document AI",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Pending",
+    "owner": "Claims Operations",
+    "business_unit": "Claims",
+    "region_scope": ["APAC"],
+    "si_number": "WS-013",
+    "business_purpose": "Summarize claim files and answer adjuster questions using grounded generation over claim notes, attachments, and policy extracts.",
+    "capabilities": ["generative ai", "summarization", "semantic search", "question answering", "rag"],
+    "features": ["chat UI", "summary views", "reference links", "document grounding"],
+    "tech_stack": ["Azure OpenAI", "Azure AI Search", "Blob Storage", "AKS", "APIM", "Azure Active Directory"],
+    "data_domains": ["claim notes", "attachments", "policy extracts"],
+    "data_classification": "Yellow PI",
+    "deployment_regions": ["Southeast Asia"],
+    "models": ["gpt family llm", "embedding model"],
+    "users": ["claims adjusters"],
+    "interfaces": ["claims repository", "document store"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "Business hours"},
+    "priority": 3,
+    "notes": "Pending assistant use case near the approved underwriting copilot pattern.",
+    "coords": {"embedding3d": {"x": 2.2, "y": -7.6, "z": 1.8}, "tech_focus": {"x": 2.6, "y": -7.2, "z": 2.3}, "purpose_focus": {"x": 1.7, "y": -8.0, "z": 1.4}}
+  },
+  {
+    "id": "policy_document_classifier",
+    "name": "Policy Document Classifier",
+    "short_name": "Policy Classifier",
+    "family": "Assistants & Document AI",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "Approved",
+    "owner": "Document Services",
+    "business_unit": "Shared Services",
+    "region_scope": ["Global"],
+    "si_number": "WS-014",
+    "business_purpose": "Classify inbound policy and endorsement documents, extract key metadata, and route work items to downstream systems.",
+    "capabilities": ["document classification", "metadata extraction", "routing", "ocr"],
+    "features": ["classification queue", "confidence scores", "routing rules", "audit trail"],
+    "tech_stack": ["Azure Document Intelligence", "Azure Functions", "Blob Storage", "Service Bus", "Azure Active Directory"],
+    "data_domains": ["policy documents", "endorsements", "metadata"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US East 2"],
+    "models": ["document classifier", "ocr pipeline"],
+    "users": ["document ops"],
+    "interfaces": ["intake mailbox", "workflow engine"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "24x6"},
+    "priority": 2,
+    "notes": "Document AI family member with weaker similarity to copilot/RAG apps.",
+    "coords": {"embedding3d": {"x": -2.4, "y": -10.5, "z": 0.4}, "tech_focus": {"x": -1.8, "y": -10.2, "z": 0.8}, "purpose_focus": {"x": -3.0, "y": -10.8, "z": 0.1}}
+  },
+  {
+    "id": "knowledge_search_assistant",
+    "name": "Knowledge Search Assistant",
+    "short_name": "Knowledge Search",
+    "family": "Assistants & Document AI",
+    "source_type": "Workshop synthetic seed",
+    "review_status": "In Review",
+    "owner": "Enterprise Knowledge",
+    "business_unit": "Shared Services",
+    "region_scope": ["Global"],
+    "si_number": "WS-015",
+    "business_purpose": "Provide enterprise semantic search and chat over architecture, policy, and standards content using RAG and citation-backed responses.",
+    "capabilities": ["semantic search", "generative ai", "question answering", "rag"],
+    "features": ["chat UI", "citations", "search facets", "prompt templates"],
+    "tech_stack": ["Azure OpenAI", "Azure AI Search", "Blob Storage", "AKS", "Azure Active Directory"],
+    "data_domains": ["standards", "policies", "architecture docs"],
+    "data_classification": "Yellow Business",
+    "deployment_regions": ["US East 2"],
+    "models": ["gpt family llm", "embedding model"],
+    "users": ["employees"],
+    "interfaces": ["document store", "sso"],
+    "nfr": {"rto_hours": 24, "rpo_hours": 4, "availability": "Business hours"},
+    "priority": 2,
+    "notes": "Broader knowledge assistant sharing the same technical pattern as other GenAI assistants.",
+    "coords": {"embedding3d": {"x": 1.0, "y": -11.2, "z": 4.6}, "tech_focus": {"x": 1.4, "y": -10.9, "z": 5.0}, "purpose_focus": {"x": 0.5, "y": -11.6, "z": 4.1}}
   }
-];
+]
+;
