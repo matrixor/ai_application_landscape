@@ -375,7 +375,45 @@
     return null;
   }
 
-  function bindGraphEvents(graphDiv) {
+  function renderPlot(visibleApps, selectedApp) {
+    const graphDiv = document.getElementById('graph');
+    const edges = collectEdges(visibleApps, selectedApp);
+    const traces = [];
+    if (edges.generic.length) traces.push(edgeTrace(edges.generic, 'rgba(120,138,160,0.25)', 2));
+    if (edges.highlighted.length) traces.push(edgeTrace(edges.highlighted, 'rgba(39,110,241,0.8)', 5));
+    const nodeTraceIndex = traces.length;
+    traces.push(nodeTrace(visibleApps, selectedApp));
+
+    const layout = {
+      margin: { l: 0, r: 0, t: 0, b: 0 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      scene: {
+        bgcolor: 'rgba(0,0,0,0)',
+        xaxis: { visible: false, showbackground: false },
+        yaxis: { visible: false, showbackground: false },
+        zaxis: { visible: false, showbackground: false },
+        camera: {
+          eye: {
+            x: STATE.cameraRadius * Math.cos(STATE.cameraAngle),
+            y: STATE.cameraRadius * Math.sin(STATE.cameraAngle),
+            z: 0.95 + 0.15 * Math.sin(STATE.cameraAngle / 2)
+          }
+        }
+      }
+    };
+
+    Plotly.react(graphDiv, traces, layout, {
+      displayModeBar: false,
+      responsive: true,
+      scrollZoom: true
+    });
+    graphDiv._nodeTraceIndex = nodeTraceIndex;
+    graphDiv._nodeIds = visibleApps.map((app) => app.id);
+    graphDiv._hoveredAppId = null;
+
+    // Re-bind Plotly events after every react() call. Plotly.react may replace
+    // the internal emitter and silently drop prior handlers.
     if (graphDiv.removeAllListeners) {
       graphDiv.removeAllListeners('plotly_click');
       graphDiv.removeAllListeners('plotly_hover');
@@ -438,52 +476,6 @@
       });
       graphDiv._domBound = true;
     }
-  }
-
-  function renderPlot(visibleApps, selectedApp) {
-    const graphDiv = document.getElementById('graph');
-    const edges = collectEdges(visibleApps, selectedApp);
-    const traces = [];
-    if (edges.generic.length) traces.push(edgeTrace(edges.generic, 'rgba(120,138,160,0.25)', 2));
-    if (edges.highlighted.length) traces.push(edgeTrace(edges.highlighted, 'rgba(39,110,241,0.8)', 5));
-    const nodeTraceIndex = traces.length;
-    traces.push(nodeTrace(visibleApps, selectedApp));
-
-    const layout = {
-      margin: { l: 0, r: 0, t: 0, b: 0 },
-      paper_bgcolor: 'rgba(0,0,0,0)',
-      plot_bgcolor: 'rgba(0,0,0,0)',
-      scene: {
-        bgcolor: 'rgba(0,0,0,0)',
-        xaxis: { visible: false, showbackground: false },
-        yaxis: { visible: false, showbackground: false },
-        zaxis: { visible: false, showbackground: false },
-        camera: {
-          eye: {
-            x: STATE.cameraRadius * Math.cos(STATE.cameraAngle),
-            y: STATE.cameraRadius * Math.sin(STATE.cameraAngle),
-            z: 0.95 + 0.15 * Math.sin(STATE.cameraAngle / 2)
-          }
-        }
-      }
-    };
-
-    const renderToken = (graphDiv._renderToken || 0) + 1;
-    graphDiv._renderToken = renderToken;
-    graphDiv._nodeTraceIndex = nodeTraceIndex;
-    graphDiv._nodeIds = visibleApps.map((app) => app.id);
-    graphDiv._hoveredAppId = null;
-
-    Plotly.react(graphDiv, traces, layout, {
-      displayModeBar: false,
-      responsive: true,
-      scrollZoom: true
-    }).then(() => {
-      // Plotly.react can recreate the internal event emitter. Bind handlers only
-      // after the render promise settles, and ignore stale async completions.
-      if (graphDiv._renderToken !== renderToken) return;
-      bindGraphEvents(graphDiv);
-    });
   }
 
   function scoreRowHtml(label, value) {

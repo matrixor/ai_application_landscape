@@ -1,44 +1,70 @@
-# AI Application Landscape Workshop v1.3
+# AI Application Landscape Workshop v1.6.1
 
 This package is an **offline interactive demo** for Alan’s AI application landscape and approval workbench.
 
-## What changed in v1.3
+## What changed in v1.6.1
 
-- The workshop uses the attached **real SAS Word documents only**.
-- The node-click path was hardened so the selected application panel reliably follows the clicked dot in the 3D landscape.
-- Asset URLs now include a version query string to avoid stale browser caching of older workshop JavaScript.
-- Remaining screenshot-era references were cleaned out of the package text and profile notes.
+- The workshop data is now generated **dynamically from every real SAS `.docx` file** in `source_materials/real_sas_docs/`.
+- The old hardcoded filename-to-profile map was removed.
+- The extractor now parses section headings, interface tables, model tables, hosting tables, and the security questionnaire directly from each Word document.
+- An optional `config/profile_overrides.json` file is supported for manual cleanup, but it is **not required** for new files to appear in the demo.
+- `scripts/serve_workshop.py` auto-rebuilds the data when files in `real_sas_docs/` change and serves the workshop locally.
+- The front-end stays on the v1.3 workshop interaction model, with the additional scatter3d click fix from the attached v1.3 patch (event rebind + native mouseup fallback).
 
-## Real SAS documents included
+## Real SAS documents currently included
 
 - **Chubb AI** — Assistants & Document AI
 - **GDP Quantexa** — Fraud & Entity Intelligence
+- **North America MS Dynamics Platform for Claims** — Assistants & Document AI
 - **CVPM APAC (Chubb Virtual Portfolio Manager)** — Pricing & Portfolio Optimization
 
-The package includes the real SAS documents under `source_materials/real_sas_docs/` together with the SAS template under `source_materials/template/`.
+## How the generated files work
 
-## What is included
+- `data/sas_real_profiles.json` — source-of-truth normalized profiles built from the real SAS Word docs.
+- `data/applications.json` — the same normalized profiles, kept for the workshop UI.
+- `assets/workshop-data.js` — browser-ready copy of the same profile data, used by `index.html` when the workshop runs offline.
 
-- `index.html` — self-contained offline workshop that runs directly in a browser.
-- `data/applications.json` — normalized application profiles used by the workshop.
-- `data/sas_real_profiles.json` — identical source-of-truth profile export for the three real SAS documents.
-- `docs/extracted_profiles.md` — human-readable extraction summary.
-- `scripts/extract_real_sas_profiles.py` — helper script that rebuilds the profiles and the static JS data from the real SAS Word documents.
-- `assets/plotly.min.js` — local Plotly runtime for offline use.
+These three files are regenerated together by `scripts/extract_real_sas_profiles.py`.
 
-## How to run
+## Dynamic workflow
 
-Open `index.html` directly in a browser. No server is required.
+### Option A — rebuild on demand
 
-## What the workshop demonstrates
+1. Drop a new real SAS Word document into `source_materials/real_sas_docs/`
+2. Run:
 
-- 3D landscape of application similarity
-- Auto-spinning camera for the “3D spinning” experience
-- Click any dot to inspect the extracted dimensions behind the dot
-- Explainable nearest-neighbor view with component-level similarity breakdown
-- Review queue showing the closest current application and an overlap cue
+```bash
+python scripts/extract_real_sas_profiles.py
+```
+
+3. Refresh the workshop.
+
+### Option B — auto-rebuild while serving locally
+
+Run:
+
+```bash
+python scripts/serve_workshop.py
+```
+
+Then open the local URL that the script prints. When you add or replace a SAS file in `real_sas_docs/`, refresh the browser and the server will rebuild the workshop data automatically.
+
+## Optional overrides
+
+If you want to tweak a label without changing the parser, edit:
+
+- `config/profile_overrides.json`
+
+Example uses:
+- rename an app display name
+- force a preferred family
+- enrich `business_unit` or `owner`
+- refine a list such as `capabilities` or `tech_stack`
 
 ## Notes
 
-- With only three real SAS documents, the map is intentionally sparse but accurate to the source set.
-- When more real SAS documents are added, rerun `scripts/extract_real_sas_profiles.py` after extending the configuration map in that script.
+- Direct `index.html` opening still works with the **last generated** data snapshot.
+- Auto-detection of newly dropped SAS files requires running `scripts/serve_workshop.py` or rerunning the extractor script.
+- This build keeps the v1.3 visual workshop structure rather than the later v1.4 node-trace redesign.
+
+- Fixed a regression where the first node click worked but later clicks stopped updating the Selected application panel because Plotly event handlers were being rebound before Plotly.react() fully finished.
